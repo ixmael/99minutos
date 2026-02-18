@@ -1,0 +1,27 @@
+meta {
+  name: List shipment details
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}/shipments/:shipment_id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  shipment_id: 019c6e93-b5a1-7b02-b8ef-5d940d6eb055
+}
+
+body:json {
+  {
+    "origin": "New York",
+    "destination": "Los Angeles"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

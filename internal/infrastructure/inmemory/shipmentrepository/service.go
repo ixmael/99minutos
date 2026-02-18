@@ -62,3 +62,12 @@ func (repo *InMemoryShipmentRepository) GetAll() []*domain.Shipment {
 
 	return shipments
 }
+
+func (repo *InMemoryShipmentRepository) GetAllWithStatuses(ctx context.Context) ([]*domain.ShipmentWithCurrentStatus, error) {
+	repo.shimpmentLock.Lock()
+	defer repo.shimpmentLock.Unlock()
+
+	var shipments []*domain.ShipmentWithCurrentStatus
+
+	return shipments, nil
+}

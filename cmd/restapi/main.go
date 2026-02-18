@@ -79,6 +79,7 @@ func main() {
 
 	http.HandleFunc("POST /shipments", h.Register)
 	http.HandleFunc("GET /shipments/{shipment_id}", h.ListShipmentDetails)
+	http.HandleFunc("GET /shipments", h.ListShipmentWithStatuses)
 
 	port := fmt.Sprintf(":%d", cnfg.RestAPI.Port)
 	log.Fatal(http.ListenAndServe(port, nil))

@@ -1,0 +1,23 @@
+meta {
+  name: List all shipments
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{host}}/shipments
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "origin": "New York",
+    "destination": "Los Angeles"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

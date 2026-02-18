@@ -58,3 +58,13 @@ type ShipmentDetails struct {
 	Shipment
 	Statuses []*ShipmentStatus
 }
+
+// ShipmentWithCurrentStatus represents a shipment with its current status.
+type ShipmentWithCurrentStatus struct {
+	ID          string
+	Origin      string
+	Destination string
+	Status      ShipmentStatusList
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
+}

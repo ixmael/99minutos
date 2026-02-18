@@ -12,6 +12,7 @@ const (
 	ShipmentInWarehouseStatus ShipmentStatusList = "IN_WAREHOUSE"
 	ShipmentInTransitStatus   ShipmentStatusList = "IN_TRANSIT"
 	ShipmentDeliveredStatus   ShipmentStatusList = "DELIVERED"
+	ShipmentCancelledStatus   ShipmentStatusList = "CANCELLED"
 )
 
 // ShipmentStatus represents a shipment status.
