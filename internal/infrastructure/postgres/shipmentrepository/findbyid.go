@@ -22,7 +22,7 @@ func (repo *postgresshipmentrepository) FindByID(ctx context.Context, shipmentID
 		Where(sq.Eq{"tracking_number_id": shipmentID}).
 		Limit(1)
 
-	rows, err := getShipmentByIDQuery.RunWith(repo.db).Query()
+	rows, err := getShipmentByIDQuery.RunWith(repo.db).PlaceholderFormat(sq.Dollar).QueryContext(ctx)
 	if err != nil {
 		return nil, err
 	}

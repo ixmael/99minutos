@@ -77,7 +77,8 @@ func main() {
 
 	h := shipment_handlers.NewHTTPShipmentHandler(shipmentService)
 
-	http.HandleFunc("/shipments", h.Register)
+	http.HandleFunc("POST /shipments", h.Register)
+	http.HandleFunc("GET /shipments/{shipment_id}", h.ListShipmentDetails)
 
 	port := fmt.Sprintf(":%d", cnfg.RestAPI.Port)
 	log.Fatal(http.ListenAndServe(port, nil))

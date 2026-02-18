@@ -52,3 +52,9 @@ type NewShipmentRequest struct {
 type ShipmentCreatedResult struct {
 	ID string
 }
+
+// ShipmentDetails represents the details of a shipment.
+type ShipmentDetails struct {
+	Shipment
+	Statuses []*ShipmentStatus
+}

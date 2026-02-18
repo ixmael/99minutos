@@ -20,7 +20,7 @@ func (repo *postgresshipmentstatusrepository) FindStatusByID(ctx context.Context
 		Where(sq.Eq{"shipment_id": shipmentID}).
 		OrderBy("created_at DESC")
 
-	rows, err := getShipmentStatusByIDQuery.RunWith(repo.db).Query()
+	rows, err := getShipmentStatusByIDQuery.RunWith(repo.db).PlaceholderFormat(sq.Dollar).QueryContext(ctx)
 	if err != nil {
 		return nil, err
 	}
