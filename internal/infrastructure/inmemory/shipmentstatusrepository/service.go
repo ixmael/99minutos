@@ -43,3 +43,15 @@ func (repo *InMemoryShipmentStatusRepository) FindStatusByID(ctx context.Context
 
 	return status, nil
 }
+
+func (repo *InMemoryShipmentStatusRepository) GetAll() []*domain.ShipmentStatus {
+	repo.statusLock.Lock()
+	defer repo.statusLock.Unlock()
+
+	var status []*domain.ShipmentStatus
+	for _, shipmentstatus := range repo.status {
+		status = append(status, shipmentstatus)
+	}
+
+	return status
+}

@@ -38,6 +38,9 @@ func RegisterShipmentSteps(ctx *godog.ScenarioContext, tc *TestContext) {
 	ctx.Step(`^a shipment request is submitted$`, ss.WhenRequestNewShipment)
 	ctx.Step(`^the registration request is successful$`, ss.ThenRegistrationRequestIsSuccessful)
 	ctx.Step(`^the shipment state is "([^"]*)"$`, ss.ThenShipmentStateIs)
+	ctx.Step(`^the registration request is rejected$`, ss.ThenRegistrationRequestIsRejected)
+	ctx.Step(`^the repository not has any shipment$`, ss.ThenRepositoryNotHasAnyShipment)
+	ctx.Step(`^the repository not has any shipment status$`, ss.ThenRepositoryNotHasAnyShipmentStatus)
 }
 
 func (ss *ShipmentSteps) GivenShipmentSystemIsReady() error {
@@ -85,9 +88,18 @@ func (ss *ShipmentSteps) GivenShipmentDestination(destinationStr string) error {
 }
 
 func (ss *ShipmentSteps) WhenRequestNewShipment() error {
+	origin := ""
+	if ss.testContext.NewShipmentDestinationRequest != nil {
+		origin = *ss.testContext.NewShipmentDestinationRequest
+	}
+	destination := ""
+	if ss.testContext.NewShipmentDestinationRequest != nil {
+		destination = *ss.testContext.NewShipmentDestinationRequest
+	}
+
 	newShipmentRequest := &domain.NewShipmentRequest{
-		Origin:      *ss.testContext.NewShipmentOriginRequest,
-		Destination: *ss.testContext.NewShipmentDestinationRequest,
+		Origin:      origin,
+		Destination: destination,
 	}
 
 	shipmentResult, err := ss.testContext.ShipmentService.CreateShipment(
@@ -135,6 +147,40 @@ func (ss *ShipmentSteps) ThenShipmentStateIs(stateStr string) error {
 
 	if status[0].Status != domain.ShipmentStatusList(strings.ToUpper(stateStr)) {
 		return errors.New(fmt.Sprintf("shipment status is not %s", stateStr))
+	}
+
+	return nil
+}
+
+func (ss *ShipmentSteps) ThenRegistrationRequestIsRejected() error {
+	if ss.testContext.LastError == nil {
+		return errors.New("registration request not rejected")
+	}
+
+	return nil
+}
+
+func (ss *ShipmentSteps) ThenRepositoryNotHasAnyShipment() error {
+	repo, ok := ss.testContext.ShipmentRepository.(*shipmentrepository.InMemoryShipmentRepository)
+	if !ok {
+		return errors.New("shipment repository is not an InMemoryShipmentRepository")
+	}
+
+	if len(repo.GetAll()) != 0 {
+		return errors.New("shipment repository has shipments")
+	}
+
+	return nil
+}
+
+func (ss *ShipmentSteps) ThenRepositoryNotHasAnyShipmentStatus() error {
+	repo, ok := ss.testContext.ShipmentStatusRepository.(*shipmentstatusrepository.InMemoryShipmentStatusRepository)
+	if !ok {
+		return errors.New("shipment status repository is not an InMemoryShipmentRepository")
+	}
+
+	if len(repo.GetAll()) != 0 {
+		return errors.New("shipment status repository has items")
 	}
 
 	return nil

@@ -12,3 +12,10 @@ Feature: Register a shipment
     When a shipment request is submitted
     Then the registration request is successful
     And the shipment state is "created"
+
+  Scenario: Invalid data register
+    Given the origin is "New York"
+    When a shipment request is submitted
+    Then the registration request is rejected
+    And the repository not has any shipment
+    And the repository not has any shipment status

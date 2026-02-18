@@ -50,3 +50,15 @@ func (repo *InMemoryShipmentRepository) FindByID(ctx context.Context, shipmentID
 
 	return shipment, nil
 }
+
+func (repo *InMemoryShipmentRepository) GetAll() []*domain.Shipment {
+	repo.shimpmentLock.Lock()
+	defer repo.shimpmentLock.Unlock()
+
+	var shipments []*domain.Shipment
+	for _, shipment := range repo.shipments {
+		shipments = append(shipments, shipment)
+	}
+
+	return shipments
+}
