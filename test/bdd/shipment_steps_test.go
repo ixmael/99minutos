@@ -15,6 +15,7 @@ import (
 	"github.com/ixmael/99minutos/internal/core/services/shipmentservice"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/logger"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/shipmentrepository"
+	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/shipmentstatusrepository"
 )
 
 // ShipmentSteps contains shared step definitions for shipment-related BDD tests
@@ -50,11 +51,17 @@ func (ss *ShipmentSteps) GivenShipmentSystemIsReady() error {
 		return err
 	}
 
-	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository)
+	shipmentstatusrepository, err := shipmentstatusrepository.NewInMemoryShipmentStatusRepository()
 	if err != nil {
 		return err
 	}
 
+	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository, shipmentstatusrepository)
+	if err != nil {
+		return err
+	}
+
+	ss.testContext.ShipmentStatusRepository = shipmentstatusrepository
 	ss.testContext.ShipmentRepository = shipmentrepository
 	ss.testContext.ShipmentService = shipmentservice
 
@@ -114,8 +121,20 @@ func (ss *ShipmentSteps) ThenShipmentStateIs(stateStr string) error {
 		return errors.New(fmt.Sprintf("failed to find shipment: %v", err))
 	}
 
-	if strings.ToLower(string(shipment.Status)) != strings.ToLower(stateStr) {
-		return errors.New(fmt.Sprintf("shipment state is not %s", stateStr))
+	status, err := ss.testContext.ShipmentStatusRepository.FindStatusByID(
+		context.Background(),
+		shipment.ID,
+	)
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to find shipment status: %v", err))
+	}
+
+	if len(status) != 1 {
+		return errors.New("shipment status not found")
+	}
+
+	if status[0].Status != domain.ShipmentStatusList(strings.ToUpper(stateStr)) {
+		return errors.New(fmt.Sprintf("shipment status is not %s", stateStr))
 	}
 
 	return nil

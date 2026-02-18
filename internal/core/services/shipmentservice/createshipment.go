@@ -18,13 +18,25 @@ func (service *shipmentservice) CreateShipment(
 
 	newShipment, err := domain.NewShipment(ctx, newShipmentRequest.Origin, newShipmentRequest.Destination)
 	if err != nil {
-		service.logger.Error("invalid shipment")
+		service.logger.Error("invalid shipment", "error", err)
 		return nil, err
 	}
 
 	err = service.shipmentrepository.Save(ctx, newShipment)
 	if err != nil {
-		service.logger.Error("cannot save shipment")
+		service.logger.Error("cannot save shipment", "error", err)
+		return nil, err
+	}
+
+	shipmentStatus, err := domain.NewCreatedShipmentStatus(newShipment.ID)
+	if err != nil {
+		service.logger.Error("cannot create shipment status", "error", err)
+		return nil, err
+	}
+
+	err = service.shipmentstatusrepository.Save(ctx, shipmentStatus)
+	if err != nil {
+		service.logger.Error("cannot save shipment status", "error", err)
 		return nil, err
 	}
 

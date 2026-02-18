@@ -17,14 +17,12 @@ func (repo *postgresshipmentrepository) Save(ctx context.Context, shipment *doma
 			"tracking_number_id",
 			"origin",
 			"destination",
-			"status",
 			"created_at",
 		).
 		Values(
 			shipment.ID,
 			shipment.Origin,
 			shipment.Destination,
-			shipment.Status,
 			shipment.CreatedAt.Format(time.RFC3339),
 		)
 

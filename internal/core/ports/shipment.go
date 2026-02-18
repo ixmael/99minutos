@@ -9,6 +9,7 @@ import (
 // ShipmentService defines the interface for shipment-related operations.
 type ShipmentService interface {
 	CreateShipment(ctx context.Context, newShipmentRequest *domain.NewShipmentRequest) (*domain.ShipmentCreatedResult, error)
+	// UpdateShipmentStatus(ctx context.Context, shipmentID string, newStatus domain.ShipmentStatusList) error
 }
 
 type ShipmentRepository interface {

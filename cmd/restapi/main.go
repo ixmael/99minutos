@@ -12,6 +12,7 @@ import (
 	"github.com/ixmael/99minutos/internal/adapters/handlers/shipment_handlers"
 	"github.com/ixmael/99minutos/internal/core/services/shipmentservice"
 	"github.com/ixmael/99minutos/internal/infrastructure/postgres/shipmentrepository"
+	"github.com/ixmael/99minutos/internal/infrastructure/postgres/shipmentstatusrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/zaplogger"
 )
 
@@ -60,7 +61,14 @@ func main() {
 		return
 	}
 
-	shipmentService, err := shipmentservice.NewShipmentService(zaplogger, shipmentpostgresrepository)
+	shipmentstatuspostgresrepository, err := shipmentstatusrepository.NewPostgresShipmentStatusRepository(cnfg.Repository.PostgresURL)
+	if err != nil {
+		log.Println("error on initializing the shipment repository")
+		os.Exit(1)
+		return
+	}
+
+	shipmentService, err := shipmentservice.NewShipmentService(zaplogger, shipmentpostgresrepository, shipmentstatuspostgresrepository)
 	if err != nil {
 		log.Println("error on setup the shipment service")
 		os.Exit(1)

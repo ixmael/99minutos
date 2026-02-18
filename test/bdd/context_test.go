@@ -15,6 +15,7 @@ type TestContext struct {
 	NewShipmentOriginRequest      *string
 	NewShipmentDestinationRequest *string
 	ShipmentRepository            ports.ShipmentRepository
+	ShipmentStatusRepository      ports.ShipmentStatusRepository
 	ShipmentService               ports.ShipmentService
 }
 
@@ -26,6 +27,7 @@ func NewTestContext() *TestContext {
 		NewShipmentOriginRequest:      nil,
 		NewShipmentDestinationRequest: nil,
 		ShipmentRepository:            nil,
+		ShipmentStatusRepository:      nil,
 		ShipmentService:               nil,
 	}
 }

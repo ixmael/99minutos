@@ -8,22 +8,11 @@ import (
 	"github.com/google/uuid"
 )
 
-type ShipmentStatus string
-
-const (
-	ShipmentCreatedStatus     ShipmentStatus = "CREATED"
-	ShipmentPickedUpStatus    ShipmentStatus = "PICKED_UP"
-	ShipmentInWarehouseStatus ShipmentStatus = "IN_WAREHOUSE"
-	ShipmentInTransitStatus   ShipmentStatus = "IN_TRANSIT"
-	ShipmentDeliveredStatus   ShipmentStatus = "DELIVERED"
-)
-
 // Shipment represents a shipment entity.
 type Shipment struct {
 	ID          string
 	Origin      string
 	Destination string
-	Status      ShipmentStatus
 	CreatedAt   *time.Time
 	UpdatedAt   *time.Time
 }
@@ -47,7 +36,6 @@ func NewShipment(ctx context.Context, origin, destination string) (*Shipment, er
 		ID:          id.String(),
 		Origin:      origin,
 		Destination: destination,
-		Status:      ShipmentCreatedStatus,
 		CreatedAt:   &now,
 	}
 

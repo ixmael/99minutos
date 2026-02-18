@@ -1,6 +1,8 @@
 package zaplogger
 
 import (
+	"errors"
+
 	"go.uber.org/zap"
 
 	"github.com/ixmael/99minutos/internal/core/ports"
@@ -12,11 +14,17 @@ type zaploggerservice struct {
 
 // NewZapLogger creates a new instance of the ZapLogger service.
 func NewZapLogger(environment string) (ports.Logger, error) {
-	var logger *zap.Logger
-	if environment != "development" {
-		logger, _ = zap.NewProduction()
-	} else {
-		logger, _ = zap.NewDevelopment()
+	config := zap.NewProductionConfig()
+	if environment != "production" {
+		config = zap.NewDevelopmentConfig()
+	}
+
+	logger, err := config.Build(
+		zap.AddCaller(),
+		zap.AddCallerSkip(1),
+	)
+	if err != nil {
+		return nil, errors.New("cannot create logger")
 	}
 
 	l := zaploggerservice{
@@ -27,21 +35,21 @@ func NewZapLogger(environment string) (ports.Logger, error) {
 }
 
 func (l *zaploggerservice) Debug(msg string, args ...any) {
-	l.logger.Debug(msg)
+	l.logger.Debugw(msg, args...)
 }
 
 func (l *zaploggerservice) Info(msg string, args ...any) {
-	l.logger.Info(msg)
+	l.logger.Infow(msg, args...)
 }
 
 func (l *zaploggerservice) Warn(msg string, args ...any) {
-	l.logger.Warn(msg)
+	l.logger.Warnw(msg, args...)
 }
 
 func (l *zaploggerservice) Error(msg string, args ...any) {
-	l.logger.Error(msg)
+	l.logger.Errorw(msg, args...)
 }
 
 func (l *zaploggerservice) Fatal(msg string, args ...any) {
-	l.logger.Fatal(msg)
+	l.logger.Fatalw(msg, args...)
 }
