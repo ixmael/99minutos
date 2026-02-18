@@ -27,6 +27,6 @@ func TestFeatures(t *testing.T) {
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	tc := NewTestContext()
 
-	// RegisterCommonSteps(ctx, tc)
-	RegisterShipmentSteps(ctx, tc)
+	RegisterClientShipmentSteps(ctx, tc)
+	RegisterUserSteps(ctx, tc)
 }

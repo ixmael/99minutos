@@ -11,6 +11,7 @@ import (
 // Shipment represents a shipment entity.
 type Shipment struct {
 	ID          string
+	UserID      string
 	Origin      string
 	Destination string
 	CreatedAt   *time.Time
@@ -18,7 +19,7 @@ type Shipment struct {
 }
 
 // NewShipment creates a new shipment with the given origin and destination.
-func NewShipment(ctx context.Context, origin, destination string) (*Shipment, error) {
+func NewShipment(ctx context.Context, userID, origin, destination string) (*Shipment, error) {
 	if origin == "" {
 		return nil, errors.New("origin cannot be empty")
 	}
@@ -34,6 +35,7 @@ func NewShipment(ctx context.Context, origin, destination string) (*Shipment, er
 	}
 	shipment := Shipment{
 		ID:          id.String(),
+		UserID:      userID,
 		Origin:      origin,
 		Destination: destination,
 		CreatedAt:   &now,
@@ -44,6 +46,7 @@ func NewShipment(ctx context.Context, origin, destination string) (*Shipment, er
 
 // NewShipmentRequest represents a request to create a new shipment.
 type NewShipmentRequest struct {
+	Email       string
 	Origin      string
 	Destination string
 }

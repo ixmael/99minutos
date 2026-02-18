@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"strings"
 	"time"
 )
 
@@ -28,6 +29,18 @@ func NewCreatedShipmentStatus(shipmentID string) (*ShipmentStatus, error) {
 	shipmentstatus := &ShipmentStatus{
 		ID:        shipmentID,
 		Status:    ShipmentCreatedStatus,
+		CreatedAt: &now,
+	}
+
+	return shipmentstatus, nil
+}
+
+func NewShipmentStatus(shipmentID, statusStr string) (*ShipmentStatus, error) {
+	status := ShipmentStatusList(strings.ToUpper(statusStr))
+	now := time.Now()
+	shipmentstatus := &ShipmentStatus{
+		ID:        shipmentID,
+		Status:    status,
 		CreatedAt: &now,
 	}
 
