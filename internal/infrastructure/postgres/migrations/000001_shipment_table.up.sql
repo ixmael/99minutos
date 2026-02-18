@@ -1,0 +1,11 @@
+CREATE TYPE shipment_status AS ENUM ('CREATED', 'PICKED_UP', 'IN_WAREHOUSE', 'IN_TRANSIT', 'DELIVERED');
+
+CREATE TABLE shipment (
+    id SERIAL PRIMARY KEY,
+    tracking_number_id VARCHAR(128) NOT NULL UNIQUE,
+    origin VARCHAR(128) NOT NULL,
+    destination VARCHAR(128) NOT NULL,
+    status shipment_status NOT NULL DEFAULT 'CREATED',
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NULL DEFAULT NULL
+);

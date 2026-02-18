@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "99minutos Test",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

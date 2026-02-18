@@ -13,6 +13,7 @@ import (
 
 	"github.com/ixmael/99minutos/internal/core/domain"
 	"github.com/ixmael/99minutos/internal/core/services/shipmentservice"
+	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/logger"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/shipmentrepository"
 )
 
@@ -39,12 +40,17 @@ func RegisterShipmentSteps(ctx *godog.ScenarioContext, tc *TestContext) {
 }
 
 func (ss *ShipmentSteps) GivenShipmentSystemIsReady() error {
+	logger, err := logger.NewInMemoryLoggerServices()
+	if err != nil {
+		return err
+	}
+
 	shipmentrepository, err := shipmentrepository.NewInMemoryShipmentRepository()
 	if err != nil {
 		return err
 	}
 
-	shipmentservice, err := shipmentservice.NewShipmentService(shipmentrepository)
+	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository)
 	if err != nil {
 		return err
 	}

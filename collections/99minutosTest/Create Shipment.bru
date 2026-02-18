@@ -1,0 +1,23 @@
+meta {
+  name: Create Shipment
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/shipments
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "origin": "New York",
+    "destination": "Los Angeles"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

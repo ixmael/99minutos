@@ -4,12 +4,18 @@ import (
 	"context"
 	"errors"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type ShipmentStatus string
 
 const (
-	ShipmentCreatedStatus ShipmentStatus = "CREATED"
+	ShipmentCreatedStatus     ShipmentStatus = "CREATED"
+	ShipmentPickedUpStatus    ShipmentStatus = "PICKED_UP"
+	ShipmentInWarehouseStatus ShipmentStatus = "IN_WAREHOUSE"
+	ShipmentInTransitStatus   ShipmentStatus = "IN_TRANSIT"
+	ShipmentDeliveredStatus   ShipmentStatus = "DELIVERED"
 )
 
 // Shipment represents a shipment entity.
@@ -19,6 +25,7 @@ type Shipment struct {
 	Destination string
 	Status      ShipmentStatus
 	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
 }
 
 // NewShipment creates a new shipment with the given origin and destination.
@@ -32,7 +39,12 @@ func NewShipment(ctx context.Context, origin, destination string) (*Shipment, er
 	}
 
 	now := time.Now().UTC()
+	id, err := uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
 	shipment := Shipment{
+		ID:          id.String(),
 		Origin:      origin,
 		Destination: destination,
 		Status:      ShipmentCreatedStatus,
