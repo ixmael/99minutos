@@ -1,13 +1,19 @@
 package userservice
 
-import "github.com/ixmael/99minutos/internal/core/ports"
+import (
+	"github.com/ixmael/99minutos/internal/core/ports"
+)
 
-type UserService struct {
-	repo ports.UserRepository
+type userserviceimpl struct {
+	repo   ports.UserRepository
+	logger ports.Logger
 }
 
-func NewUserService(repo ports.UserRepository) *UserService {
-	return &UserService{
-		repo: repo,
+func NewUserService(logger ports.Logger, repo ports.UserRepository) (ports.UserService, error) {
+	service := userserviceimpl{
+		repo:   repo,
+		logger: logger,
 	}
+
+	return &service, nil
 }

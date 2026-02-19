@@ -9,7 +9,7 @@ import (
 	"github.com/ixmael/99minutos/internal/core/domain"
 )
 
-func (repo *postgresshipmentrepository) FindByID(ctx context.Context, shipmentID string) (*domain.Shipment, error) {
+func (repo *postgresshipmentrepository) FindByShipmentID(ctx context.Context, shipmentID string) (*domain.Shipment, error) {
 	getShipmentByIDQuery := sq.
 		Select(
 			"tracking_number_id",

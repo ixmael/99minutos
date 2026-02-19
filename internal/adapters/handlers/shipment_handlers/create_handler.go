@@ -13,6 +13,23 @@ func (h *HTTPShipmentHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ctx := r.Context()
+
+	roleVal := ctx.Value(domain.RoleKey)
+	emailVal := ctx.Value(domain.EmailKey)
+
+	role, ok := roleVal.(string)
+	if !ok {
+		http.Error(w, "Method not allowed", http.StatusBadRequest)
+		return
+	}
+
+	email, ok := emailVal.(string)
+	if !ok {
+		http.Error(w, "Method not allowed", http.StatusBadRequest)
+		return
+	}
+
 	var webShipmentRequest struct {
 		Origin      string `json:"origin"`
 		Destination string `json:"destination"`
@@ -26,6 +43,8 @@ func (h *HTTPShipmentHandler) Register(w http.ResponseWriter, r *http.Request) {
 	newShipmentRequest := domain.NewShipmentRequest{
 		Origin:      webShipmentRequest.Origin,
 		Destination: webShipmentRequest.Destination,
+		Email:       email,
+		Role:        role,
 	}
 
 	shipmentResult, err := h.service.CreateShipment(r.Context(), &newShipmentRequest)

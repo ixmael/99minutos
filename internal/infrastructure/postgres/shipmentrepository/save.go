@@ -14,12 +14,14 @@ func (repo *postgresshipmentrepository) Save(ctx context.Context, shipment *doma
 	insertShipmentQuery := sq.
 		Insert("shipment").
 		Columns(
+			"user_id",
 			"tracking_number_id",
 			"origin",
 			"destination",
 			"created_at",
 		).
 		Values(
+			shipment.UserID,
 			shipment.ID,
 			shipment.Origin,
 			shipment.Destination,

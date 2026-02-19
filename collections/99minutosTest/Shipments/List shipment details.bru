@@ -1,13 +1,17 @@
 meta {
-  name: List all shipments
+  name: List shipment details
   type: http
-  seq: 4
+  seq: 3
 }
 
 get {
-  url: {{host}}/shipments
+  url: {{host}}/shipments/:shipment_id
   body: json
   auth: inherit
+}
+
+params:path {
+  shipment_id: 019c72af-8c26-78fa-80d8-d3a0b3a97456
 }
 
 body:json {

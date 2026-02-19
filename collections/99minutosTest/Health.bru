@@ -1,0 +1,46 @@
+meta {
+  name: Health
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}/health
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: health success
+  
+  request: {
+    url: {{host}}/health
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      date: Wed, 18 Feb 2026 17:44:51 GMT
+      content-length: 2
+      content-type: text/plain; charset=utf-8
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        OK
+      '''
+    }
+  }
+}

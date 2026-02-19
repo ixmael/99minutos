@@ -18,10 +18,19 @@ func (service *shipmentservice) GetAllWithStatuses(ctx context.Context, email st
 		return nil, errors.New("user not found")
 	}
 
-	shipmentsWithStatus, err := service.shipmentrepository.GetAllWithStatuses(ctx, user.ID)
-	if err != nil {
-		service.logger.Error("failed to load all the shipments with the current statuses", "error", err)
-		return nil, err
+	var shipmentsWithStatus []*domain.ShipmentWithCurrentStatus = nil
+	if user.IsAdmin {
+		shipmentsWithStatus, err = service.shipmentrepository.GetAllWithStatuses(ctx)
+		if err != nil {
+			service.logger.Error("failed to load all the shipments with the current statuses", "error", err)
+			return nil, err
+		}
+	} else {
+		shipmentsWithStatus, err = service.shipmentrepository.GetAllMyShipmentsWithStatuses(ctx, user.ID)
+		if err != nil {
+			service.logger.Error("failed to load all the shipments with the current statuses", "error", err)
+			return nil, err
+		}
 	}
 
 	return shipmentsWithStatus, nil

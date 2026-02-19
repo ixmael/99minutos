@@ -156,7 +156,7 @@ func (cs *ClientShipmentSteps) ThenRegistrationRequestIsSuccessful() error {
 }
 
 func (cs *ClientShipmentSteps) ThenShipmentStateIs(stateStr string) error {
-	shipment, err := cs.testContext.ShipmentRepository.FindByID(
+	shipment, err := cs.testContext.ShipmentRepository.FindByShipmentID(
 		context.Background(),
 		cs.testContext.LastShipmentCreatedResult.ID,
 	)
@@ -222,7 +222,6 @@ func (cs *ClientShipmentSteps) WhenRequestAllShipments() error {
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to get all shipments: %v", err))
 	}
-
 	cs.testContext.LastShipmentsWithStatuses = shipments
 
 	return nil
@@ -267,20 +266,9 @@ func (cs *ClientShipmentSteps) ThenShipmentInListHasDestination(destination stri
 }
 
 func (cs *ClientShipmentSteps) WhenRequestShipmentDetails() error {
-	// if cs.testContext.LastShipmentCreatedResult == nil {
-	// 	return errors.New("no shipment created to get details from")
-	// }
-
-	// details, err := cs.testContext.ShipmentService.GetShipmentDetails(
-	// 	context.Background(),
-	// 	cs.testContext.LastShipmentCreatedResult.ID,
-	// )
-	// if err != nil {
-	// 	return errors.New(fmt.Sprintf("failed to get shipment details: %v", err))
-	// }
-
 	details, err := cs.testContext.ShipmentService.GetShipmentDetails(
 		context.Background(),
+		*cs.testContext.UserEmail,
 		cs.testContext.LastShipment.ID,
 	)
 	cs.testContext.LastShipmentDetails = details
@@ -339,7 +327,7 @@ func (cs *ClientShipmentSteps) ThenShipmentIsRelatedToClient() error {
 		return err
 	}
 
-	shipment, err := cs.testContext.ShipmentRepository.FindByID(
+	shipment, err := cs.testContext.ShipmentRepository.FindByShipmentID(
 		context.Background(),
 		cs.testContext.LastShipmentCreatedResult.ID,
 	)
@@ -400,6 +388,7 @@ func (cs *ClientShipmentSteps) GivenSystemIsReadyToList() error {
 func (cs *ClientShipmentSteps) GivenSystemHasOneClientShipment(emailStr string) error {
 	clientShipmentRequest := &domain.NewShipmentRequest{
 		Email:       emailStr,
+		Role:        domain.ClientRole,
 		Origin:      "Beijing",
 		Destination: "Shanghai",
 	}
@@ -410,6 +399,7 @@ func (cs *ClientShipmentSteps) GivenSystemHasOneClientShipment(emailStr string) 
 	}
 
 	cs.testContext.LastShipment = shipment
+	cs.testContext.UserEmail = &emailStr
 
 	return nil
 }

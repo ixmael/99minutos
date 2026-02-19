@@ -1,4 +1,4 @@
-package shipmentrepository
+package userrepository
 
 import (
 	"database/sql"
@@ -8,13 +8,13 @@ import (
 	"github.com/ixmael/99minutos/internal/core/ports"
 )
 
-type postgresshipmentrepository struct {
+type postgresuserrepository struct {
 	db     *sql.DB
 	logger ports.Logger
 }
 
-// NewPostgresShipmentRepository
-func NewPostgresShipmentRepository(uri string, logger ports.Logger) (ports.ShipmentRepository, error) {
+// NewPostgresUserStatusRepository implements ports.UserRepository
+func NewPostgresUserStatusRepository(uri string, logger ports.Logger) (ports.UserRepository, error) {
 	db, err := sql.Open("postgres", uri)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func NewPostgresShipmentRepository(uri string, logger ports.Logger) (ports.Shipm
 		return nil, err
 	}
 
-	repo := postgresshipmentrepository{
+	repo := postgresuserrepository{
 		db:     db,
 		logger: logger,
 	}

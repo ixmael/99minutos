@@ -5,6 +5,7 @@ go 1.25.7
 require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/cucumber/godog v0.15.1
+	github.com/golang-jwt/jwt/v5 v5.2.3
 	github.com/google/uuid v1.6.0
 	github.com/lib/pq v1.10.9
 	github.com/pelletier/go-toml/v2 v2.2.4

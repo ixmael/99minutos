@@ -46,13 +46,21 @@ func (repo *InMemoryUserRepository) FindByEmail(ctx context.Context, email strin
 	repo.usersLock.Lock()
 	defer repo.usersLock.Unlock()
 
+	var id int64 = 0
 	var user *domain.User = nil
 	for _, currentUser := range repo.users {
+		id = id + 1
 		if currentUser.Email == email {
 			user = currentUser
 			break
 		}
 	}
 
+	user.ID = id
+
 	return user, nil
+}
+
+func (repo *InMemoryUserRepository) FindByEmailAndHashedPassword(ctx context.Context, email, hashedPassword string) (*domain.User, error) {
+	return nil, errors.New("not implemented")
 }
