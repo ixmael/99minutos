@@ -1,0 +1,67 @@
+meta {
+  name: Register Event
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/events
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "tracking_number": "99M-ABC123",
+    "status": "in_transit",
+    "timestamp": "2025-02-12T15:04:05Z",
+    "source": "driver_app",
+    "location": {
+      "lat": 19.4326,
+      "lng": -99.1332
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: success example
+  
+  request: {
+    url: {{host}}/shipments
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "origin": "New York",
+        "destination": "Los Angeles"
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      date: Wed, 18 Feb 2026 21:37:13 GMT
+      content-length: 55
+      content-type: text/plain; charset=utf-8
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "shipment_id": "019c72af-8c26-78fa-80d8-d3a0b3a97456"
+        }
+      '''
+    }
+  }
+}

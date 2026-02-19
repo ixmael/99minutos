@@ -46,3 +46,29 @@ func NewShipmentStatus(shipmentID, statusStr string) (*ShipmentStatus, error) {
 
 	return shipmentstatus, nil
 }
+
+func IsValidTransition(currentStatus, nextStatus ShipmentStatusList) bool {
+	if currentStatus == ShipmentCreatedStatus && nextStatus == ShipmentPickedUpStatus {
+		return true
+	}
+	if currentStatus == ShipmentPickedUpStatus && nextStatus == ShipmentInWarehouseStatus {
+		return true
+	}
+	if currentStatus == ShipmentInWarehouseStatus && nextStatus == ShipmentInTransitStatus {
+		return true
+	}
+	if currentStatus == ShipmentInTransitStatus && nextStatus == ShipmentDeliveredStatus {
+		return true
+	}
+	if currentStatus == ShipmentCreatedStatus && nextStatus == ShipmentCancelledStatus {
+		return true
+	}
+	if currentStatus == ShipmentPickedUpStatus && nextStatus == ShipmentCancelledStatus {
+		return true
+	}
+	if currentStatus == ShipmentInWarehouseStatus && nextStatus == ShipmentCancelledStatus {
+		return true
+	}
+
+	return false
+}

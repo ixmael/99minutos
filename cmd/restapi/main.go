@@ -18,6 +18,7 @@ import (
 	"github.com/ixmael/99minutos/internal/adapters/middlewares"
 	"github.com/ixmael/99minutos/internal/core/services/shipmentservice"
 	"github.com/ixmael/99minutos/internal/core/services/userservice"
+	"github.com/ixmael/99minutos/internal/infrastructure/postgres"
 	"github.com/ixmael/99minutos/internal/infrastructure/postgres/shipmentrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/postgres/shipmentstatusrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/postgres/userrepository"
@@ -58,6 +59,13 @@ func main() {
 	zaplogger, err := zaplogger.NewZapLogger(cnfg.Environment)
 	if err != nil {
 		log.Println("error on initializing the logger")
+		os.Exit(1)
+		return
+	}
+
+	err = postgres.SetupPostgresRepository(cnfg.Repository.PostgresURL, zaplogger)
+	if err != nil {
+		log.Println("error on applying the migrations")
 		os.Exit(1)
 		return
 	}
