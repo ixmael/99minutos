@@ -25,6 +25,7 @@ func RegisterUserSteps(ctx *godog.ScenarioContext, tc *TestContext) {
 	us := NewUserSteps(tc)
 
 	ctx.Step(`^the client is registered with the email "([^"]*)"$`, us.GivenClientIsRegistered)
+	ctx.Step(`^the admin is registered with the email "([^"]*)"$`, us.GivenAdminIsRegistered)
 }
 
 func (us *UserSteps) GivenClientIsRegistered(email string) error {
@@ -39,6 +40,22 @@ func (us *UserSteps) GivenClientIsRegistered(email string) error {
 	}
 
 	us.testContext.UserEmail = &client.Email
+
+	return nil
+}
+
+func (us *UserSteps) GivenAdminIsRegistered(email string) error {
+	admin, err := domain.NewUser(email, "thePazsW0r?", true)
+	if err != nil {
+		return err
+	}
+
+	err = us.testContext.UserRepository.Register(context.Background(), admin)
+	if err != nil {
+		return err
+	}
+
+	us.testContext.UserEmail = &admin.Email
 
 	return nil
 }

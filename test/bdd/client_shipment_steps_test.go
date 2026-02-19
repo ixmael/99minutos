@@ -14,7 +14,9 @@ import (
 
 	"github.com/ixmael/99minutos/internal/core/domain"
 	"github.com/ixmael/99minutos/internal/core/services/shipmentservice"
+	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/cache"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/logger"
+	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/queue"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/shipmentrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/shipmentstatusrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/userrepository"
@@ -45,6 +47,7 @@ func RegisterClientShipmentSteps(ctx *godog.ScenarioContext, tc *TestContext) {
 	ctx.Step(`^the repository not has any shipment status$`, cs.ThenRepositoryNotHasAnyShipmentStatus)
 	ctx.Step(`^the system has no shipments$`, cs.GivenSystemHasNoShipments)
 	ctx.Step(`^I request all shipments$`, cs.WhenRequestAllShipments)
+	ctx.Step(`^I request all shipments with email "([^"]*)"$`, cs.WhenRequestAllShipmentsWithEmail)
 	ctx.Step(`^I should receive an empty list of shipments$`, cs.ThenShouldReceiveEmptyList)
 	ctx.Step(`^I should receive a list with (\d+) shipment$`, cs.ThenShouldReceiveListWithCount)
 	ctx.Step(`^the shipment in the list has origin "([^"]*)"$`, cs.ThenShipmentInListHasOrigin)
@@ -84,7 +87,24 @@ func (cs *ClientShipmentSteps) GivenShipmentSystemIsReady() error {
 		return err
 	}
 
-	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository, shipmentstatusrepository, userrepository)
+	inmemoryqueue, err := queue.NewInMemoryQueue()
+	if err != nil {
+		return err
+	}
+
+	inmemorycache, err := cache.NewInMemoryCache()
+	if err != nil {
+		return err
+	}
+
+	shipmentservice, err := shipmentservice.NewShipmentService(
+		logger,
+		shipmentrepository,
+		shipmentstatusrepository,
+		userrepository,
+		inmemoryqueue,
+		inmemorycache,
+	)
 	if err != nil {
 		return err
 	}
@@ -219,6 +239,16 @@ func (cs *ClientShipmentSteps) ThenRepositoryNotHasAnyShipmentStatus() error {
 
 func (cs *ClientShipmentSteps) WhenRequestAllShipments() error {
 	shipments, err := cs.testContext.ShipmentService.GetAllWithStatuses(context.Background(), *cs.testContext.UserEmail, nil)
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to get all shipments: %v", err))
+	}
+	cs.testContext.LastShipmentsWithStatuses = shipments
+
+	return nil
+}
+
+func (cs *ClientShipmentSteps) WhenRequestAllShipmentsWithEmail(emailStr string) error {
+	shipments, err := cs.testContext.ShipmentService.GetAllWithStatuses(context.Background(), emailStr, nil)
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to get all shipments: %v", err))
 	}
@@ -368,7 +398,17 @@ func (cs *ClientShipmentSteps) GivenSystemIsReadyToList() error {
 		return err
 	}
 
-	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository, shipmentstatusrepository, userrepository)
+	queueservice, err := queue.NewInMemoryQueue()
+	if err != nil {
+		return err
+	}
+
+	cacheservice, err := cache.NewInMemoryCache()
+	if err != nil {
+		return err
+	}
+
+	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository, shipmentstatusrepository, userrepository, queueservice, cacheservice)
 	if err != nil {
 		return err
 	}
@@ -395,7 +435,7 @@ func (cs *ClientShipmentSteps) GivenSystemHasOneClientShipment(emailStr string) 
 
 	shipment, err := cs.testContext.ShipmentService.CreateShipment(context.Background(), clientShipmentRequest)
 	if err != nil {
-		return err
+		return errors.New(fmt.Sprintf("error creating shipment: %s", err.Error()))
 	}
 
 	cs.testContext.LastShipment = shipment
