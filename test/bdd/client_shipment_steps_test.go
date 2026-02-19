@@ -47,6 +47,7 @@ func RegisterClientShipmentSteps(ctx *godog.ScenarioContext, tc *TestContext) {
 	ctx.Step(`^the repository not has any shipment status$`, cs.ThenRepositoryNotHasAnyShipmentStatus)
 	ctx.Step(`^the system has no shipments$`, cs.GivenSystemHasNoShipments)
 	ctx.Step(`^I request all shipments$`, cs.WhenRequestAllShipments)
+	ctx.Step(`^I request all shipments with email "([^"]*)"$`, cs.WhenRequestAllShipmentsWithEmail)
 	ctx.Step(`^I should receive an empty list of shipments$`, cs.ThenShouldReceiveEmptyList)
 	ctx.Step(`^I should receive a list with (\d+) shipment$`, cs.ThenShouldReceiveListWithCount)
 	ctx.Step(`^the shipment in the list has origin "([^"]*)"$`, cs.ThenShipmentInListHasOrigin)
@@ -246,6 +247,16 @@ func (cs *ClientShipmentSteps) WhenRequestAllShipments() error {
 	return nil
 }
 
+func (cs *ClientShipmentSteps) WhenRequestAllShipmentsWithEmail(emailStr string) error {
+	shipments, err := cs.testContext.ShipmentService.GetAllWithStatuses(context.Background(), emailStr, nil)
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to get all shipments: %v", err))
+	}
+	cs.testContext.LastShipmentsWithStatuses = shipments
+
+	return nil
+}
+
 func (cs *ClientShipmentSteps) ThenShouldReceiveEmptyList() error {
 	if len(cs.testContext.LastShipmentsWithStatuses) != 0 {
 		return errors.New(fmt.Sprintf("expected empty list, got %d shipments", len(cs.testContext.LastShipmentsWithStatuses)))
@@ -424,7 +435,7 @@ func (cs *ClientShipmentSteps) GivenSystemHasOneClientShipment(emailStr string) 
 
 	shipment, err := cs.testContext.ShipmentService.CreateShipment(context.Background(), clientShipmentRequest)
 	if err != nil {
-		return err
+		return errors.New(fmt.Sprintf("error creating shipment: %s", err.Error()))
 	}
 
 	cs.testContext.LastShipment = shipment

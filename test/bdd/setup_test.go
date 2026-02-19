@@ -29,4 +29,5 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 
 	RegisterClientShipmentSteps(ctx, tc)
 	RegisterUserSteps(ctx, tc)
+	RegisterAdminSteps(ctx, tc)
 }
