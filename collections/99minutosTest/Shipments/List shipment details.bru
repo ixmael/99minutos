@@ -1,0 +1,81 @@
+meta {
+  name: List shipment details
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}/shipments/:shipment_id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  shipment_id: 019c72af-8c26-78fa-80d8-d3a0b3a97456
+}
+
+body:json {
+  {
+    "origin": "New York",
+    "destination": "Los Angeles"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: succeess example
+  
+  request: {
+    url: {{host}}/shipments/:shipment_id
+    method: GET
+    mode: json
+    params:path: {
+      shipment_id: 019c72af-8c26-78fa-80d8-d3a0b3a97456
+    }
+  
+    body:json: {
+      {
+        "origin": "New York",
+        "destination": "Los Angeles"
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      date: Thu, 19 Feb 2026 01:15:45 GMT
+      content-length: 288
+      content-type: text/plain; charset=utf-8
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "ID": "019c72af-8c26-78fa-80d8-d3a0b3a97456",
+          "UserID": 0,
+          "Origin": "New York",
+          "Destination": "Los Angeles",
+          "CreatedAt": "2026-02-18T21:37:13Z",
+          "UpdatedAt": "0001-01-01T00:00:00Z",
+          "Statuses": [
+            {
+              "ID": "019c72af-8c26-78fa-80d8-d3a0b3a97456",
+              "Status": "CREATED",
+              "CreatedAt": "2026-02-18T21:37:13Z"
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

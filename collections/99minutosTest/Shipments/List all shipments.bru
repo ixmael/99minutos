@@ -1,0 +1,121 @@
+meta {
+  name: List all shipments
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/shipments?page=1&limit=3
+  body: json
+  auth: inherit
+}
+
+params:query {
+  page: 1
+  limit: 3
+}
+
+body:json {
+  {
+    "origin": "New York",
+    "destination": "Los Angeles"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: success example
+  
+  request: {
+    url: {{host}}/shipments
+    method: GET
+    mode: json
+    body:json: {
+      {
+        "origin": "New York",
+        "destination": "Los Angeles"
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      date: Wed, 18 Feb 2026 22:53:20 GMT
+      content-length: 1283
+      content-type: text/plain; charset=utf-8
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: text
+      content: '''
+        [
+          {
+            "ID": "019c7273-448b-799a-bb80-9d61e28a1718",
+            "Origin": "New York",
+            "Destination": "Los Angeles",
+            "Status": "CREATED",
+            "CreatedAt": "2026-02-18T20:31:22Z",
+            "UpdatedAt": "2026-02-18T20:31:22Z"
+          },
+          {
+            "ID": "019c7278-9f16-7bac-8870-53a9a71afe4a",
+            "Origin": "New York",
+            "Destination": "Los Angeles",
+            "Status": "CREATED",
+            "CreatedAt": "2026-02-18T20:37:13Z",
+            "UpdatedAt": "2026-02-18T20:37:42Z"
+          },
+          {
+            "ID": "019c727a-0ccb-7b68-b415-b317fe2f39e1",
+            "Origin": "New York",
+            "Destination": "Los Angeles",
+            "Status": "CREATED",
+            "CreatedAt": "2026-02-18T20:38:47Z",
+            "UpdatedAt": "2026-02-18T20:38:47Z"
+          },
+          {
+            "ID": "019c727d-a90d-7239-a5b7-2c80b1b8d660",
+            "Origin": "New York",
+            "Destination": "Los Angeles",
+            "Status": "CREATED",
+            "CreatedAt": "2026-02-18T20:42:43Z",
+            "UpdatedAt": "2026-02-18T20:42:43Z"
+          },
+          {
+            "ID": "019c727d-dcc3-797e-be09-0ecf37049a40",
+            "Origin": "New York",
+            "Destination": "Los Angeles",
+            "Status": "CREATED",
+            "CreatedAt": "2026-02-18T20:42:57Z",
+            "UpdatedAt": "2026-02-18T20:42:57Z"
+          },
+          {
+            "ID": "019c727d-eeff-765f-90e3-807d282762a3",
+            "Origin": "New York",
+            "Destination": "Los Angeles",
+            "Status": "CREATED",
+            "CreatedAt": "2026-02-18T20:43:01Z",
+            "UpdatedAt": "2026-02-18T20:43:01Z"
+          },
+          {
+            "ID": "019c72af-8c26-78fa-80d8-d3a0b3a97456",
+            "Origin": "New York",
+            "Destination": "Los Angeles",
+            "Status": "CREATED",
+            "CreatedAt": "2026-02-18T21:37:13Z",
+            "UpdatedAt": "2026-02-18T21:37:13Z"
+          }
+        ]
+      '''
+    }
+  }
+}

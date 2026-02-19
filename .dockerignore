@@ -1,0 +1,8 @@
+.zed
+docs
+tmp
+.air.toml
+.env.toml.example
+docker-compose.yml
+README.md
+collections
