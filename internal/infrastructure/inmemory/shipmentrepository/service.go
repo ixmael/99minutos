@@ -65,7 +65,7 @@ func (repo *InMemoryShipmentRepository) GetAll() []*domain.Shipment {
 	return shipments
 }
 
-func (repo *InMemoryShipmentRepository) GetAllWithStatuses(ctx context.Context) ([]*domain.ShipmentWithCurrentStatus, error) {
+func (repo *InMemoryShipmentRepository) GetAllWithStatuses(ctx context.Context, pagination *domain.PaginationRequest) ([]*domain.ShipmentWithCurrentStatus, error) {
 	repo.shimpmentLock.Lock()
 	defer repo.shimpmentLock.Unlock()
 
@@ -134,7 +134,7 @@ func (repo *InMemoryShipmentRepository) GetAllByUserIDAndStatus(ctx context.Cont
 	return shipments, nil
 }
 
-func (repo *InMemoryShipmentRepository) GetAllMyShipmentsWithStatuses(ctx context.Context, userID int64) ([]*domain.ShipmentWithCurrentStatus, error) {
+func (repo *InMemoryShipmentRepository) GetAllMyShipmentsWithStatuses(ctx context.Context, userID int64, pagination *domain.PaginationRequest) ([]*domain.ShipmentWithCurrentStatus, error) {
 	repo.shimpmentLock.Lock()
 	defer repo.shimpmentLock.Unlock()
 

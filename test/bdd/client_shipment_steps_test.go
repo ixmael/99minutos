@@ -218,7 +218,7 @@ func (cs *ClientShipmentSteps) ThenRepositoryNotHasAnyShipmentStatus() error {
 }
 
 func (cs *ClientShipmentSteps) WhenRequestAllShipments() error {
-	shipments, err := cs.testContext.ShipmentService.GetAllWithStatuses(context.Background(), *cs.testContext.UserEmail)
+	shipments, err := cs.testContext.ShipmentService.GetAllWithStatuses(context.Background(), *cs.testContext.UserEmail, nil)
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to get all shipments: %v", err))
 	}
