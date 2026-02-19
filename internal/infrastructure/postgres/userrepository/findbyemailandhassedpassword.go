@@ -2,7 +2,7 @@ package userrepository
 
 import (
 	"context"
-	"time"
+	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
 
@@ -24,28 +24,21 @@ func (repo *postgresuserrepository) FindByEmailAndHashedPassword(ctx context.Con
 		}).
 		Limit(1)
 
-	rows, err := getUserByEmailAndHashedPasswordQuery.RunWith(repo.db).PlaceholderFormat(sq.Dollar).QueryContext(ctx)
+	var user domain.User
+
+	err := getUserByEmailAndHashedPasswordQuery.RunWith(repo.db).PlaceholderFormat(sq.Dollar).QueryRowContext(ctx).Scan(
+		&user.ID,
+		&user.Email,
+		&user.IsAdmin,
+		&user.CreatedAt,
+	)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
 		return nil, err
 	}
-	defer rows.Close()
 
-	var user *domain.User = nil
-	for rows.Next() {
-		var id int64
-		var emailRow string
-		var isAdmin bool
-		var createdAt time.Time
-
-		rows.Scan(&id, &emailRow, &isAdmin, &createdAt)
-
-		user = &domain.User{
-			ID:        id,
-			Email:     emailRow,
-			IsAdmin:   isAdmin,
-			CreatedAt: &createdAt,
-		}
-	}
-
-	return user, nil
+	return &user, nil
 }

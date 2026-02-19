@@ -31,3 +31,12 @@ func NewPostgresShipmentStatusRepository(uri string, logger ports.Logger) (ports
 
 	return &repo, nil
 }
+
+func (repo *postgresshipmentstatusrepository) Stop() {
+	if repo.db != nil {
+		err := repo.db.Close()
+		if err != nil {
+			repo.logger.Error("error closing database", err)
+		}
+	}
+}

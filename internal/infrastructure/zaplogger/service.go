@@ -53,3 +53,7 @@ func (l *zaploggerservice) Error(msg string, args ...any) {
 func (l *zaploggerservice) Fatal(msg string, args ...any) {
 	l.logger.Fatalw(msg, args...)
 }
+
+func (l *zaploggerservice) Stop() {
+	l.logger.Sync()
+}

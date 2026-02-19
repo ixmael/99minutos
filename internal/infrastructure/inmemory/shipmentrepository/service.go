@@ -180,3 +180,6 @@ func (repo *InMemoryShipmentRepository) FindByShipmentIDAndUser(ctx context.Cont
 
 	return shipment, nil
 }
+
+func (repo *InMemoryShipmentRepository) Stop() {
+}

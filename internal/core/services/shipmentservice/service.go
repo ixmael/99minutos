@@ -1,6 +1,7 @@
 package shipmentservice
 
 import (
+	"github.com/ixmael/99minutos/internal/core/domain"
 	"github.com/ixmael/99minutos/internal/core/ports"
 )
 
@@ -10,6 +11,7 @@ type shipmentservice struct {
 	shipmentrepository       ports.ShipmentRepository
 	shipmentstatusrepository ports.ShipmentStatusRepository
 	userrepository           ports.UserRepository
+	queueservice             ports.QueueService
 }
 
 // NewShipmentService creates a new instance of the shipment service.
@@ -18,12 +20,19 @@ func NewShipmentService(
 	shipmentrepository ports.ShipmentRepository,
 	shipmentstatusrepository ports.ShipmentStatusRepository,
 	userrepository ports.UserRepository,
+	queueservice ports.QueueService,
 ) (ports.ShipmentService, error) {
+	err := queueservice.RegisterQueue(domain.QueueShipmentKey)
+	if err != nil {
+		return nil, err
+	}
+
 	service := shipmentservice{
 		logger:                   logger,
 		shipmentrepository:       shipmentrepository,
 		shipmentstatusrepository: shipmentstatusrepository,
 		userrepository:           userrepository,
+		queueservice:             queueservice,
 	}
 
 	return &service, nil

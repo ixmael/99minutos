@@ -14,4 +14,6 @@ type ShipmentStatusService interface {
 type ShipmentStatusRepository interface {
 	Save(ctx context.Context, shipmentStatus *domain.ShipmentStatus) error
 	FindStatusByID(ctx context.Context, shipmentID string) ([]*domain.ShipmentStatus, error)
+	FindCurrentStatusByID(ctx context.Context, shipmentID string) (*domain.ShipmentStatus, error)
+	Stop()
 }

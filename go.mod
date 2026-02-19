@@ -6,9 +6,11 @@ require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/cucumber/godog v0.15.1
 	github.com/golang-jwt/jwt/v5 v5.2.3
+	github.com/golang-migrate/migrate/v4 v4.19.1
 	github.com/google/uuid v1.6.0
 	github.com/lib/pq v1.10.9
 	github.com/pelletier/go-toml/v2 v2.2.4
+	github.com/rabbitmq/amqp091-go v1.10.0
 	go.uber.org/zap v1.13.0
 )
 
@@ -92,7 +94,6 @@ require (
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
 	github.com/gohugoio/hugo v0.149.1 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
-	github.com/golang-migrate/migrate/v4 v4.19.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect

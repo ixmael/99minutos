@@ -9,9 +9,18 @@ services:
   #   depends_on:
   #     - repository
 
+  queue:
+    image: docker.io/library/rabbitmq:4.2.4-management-alpine
+    container_name: 99minutos_queue
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   repository:
     image: docker.io/library/postgres:18.2-alpine3.23
     container_name: 99minutos_repository
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

@@ -72,3 +72,19 @@ type ShipmentWithCurrentStatus struct {
 	CreatedAt   *time.Time
 	UpdatedAt   *time.Time
 }
+
+// ShipmentEventRequest represents a request to update the status of a shipment.
+type ShipmentEventRequest struct {
+	TrackingNumber string
+	Status         string
+	Timestamp      time.Time
+	Source         string
+	Location       struct {
+		Lat float64
+		Lng float64
+	}
+}
+
+type EventStatusResult struct {
+	Status string
+}
