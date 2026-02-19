@@ -11,30 +11,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ixmael/99minutos/internal/adapters/workers"
 	"github.com/pelletier/go-toml/v2"
-
-	"github.com/ixmael/99minutos/internal/adapters/handlers/shipment_handlers"
-	"github.com/ixmael/99minutos/internal/adapters/handlers/user_handlers"
-	"github.com/ixmael/99minutos/internal/adapters/middlewares"
-	"github.com/ixmael/99minutos/internal/core/services/shipmentservice"
-	"github.com/ixmael/99minutos/internal/core/services/userservice"
-	"github.com/ixmael/99minutos/internal/infrastructure/postgres"
-	"github.com/ixmael/99minutos/internal/infrastructure/postgres/shipmentrepository"
-	"github.com/ixmael/99minutos/internal/infrastructure/postgres/shipmentstatusrepository"
-	"github.com/ixmael/99minutos/internal/infrastructure/postgres/userrepository"
-	"github.com/ixmael/99minutos/internal/infrastructure/zaplogger"
 )
-
-// ApplicationConfig represents the configuration for the application.
-type ApplicationConfig struct {
-	Environment string `toml:"environment"`
-	RestAPI     struct {
-		Port int `toml:"port"`
-	} `toml:"restapi"`
-	Repository struct {
-		PostgresURL string `toml:"postgres"`
-	} `toml:"repository"`
-}
 
 func main() {
 	configFilePathFlag := flag.String("config", ".env.toml", "The configuration file path")
@@ -56,111 +35,86 @@ func main() {
 		return
 	}
 
-	zaplogger, err := zaplogger.NewZapLogger(cnfg.Environment)
+	services, err := SetupServices(&cnfg)
 	if err != nil {
-		log.Println("error on initializing the logger")
+		log.Println("error on initializing the services")
+		os.Exit(1)
+		return
+	}
+	defer services.Stop()
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	// var wg sync.WaitGroup
+	//
+	worker, err := workers.NewShipmentEventWorker(services.Logger, services.ShipmentService)
+	if err != nil {
+		log.Println("error on initializing the worker")
 		os.Exit(1)
 		return
 	}
 
-	err = postgres.SetupPostgresRepository(cnfg.Repository.PostgresURL, zaplogger)
-	if err != nil {
-		log.Println("error on applying the migrations")
-		os.Exit(1)
-		return
-	}
-
-	userpostgresrepository, err := userrepository.NewPostgresUserStatusRepository(cnfg.Repository.PostgresURL, zaplogger)
-	if err != nil {
-		log.Println("error on initializing the user repository")
-		os.Exit(1)
-		return
-	}
-
-	shipmentpostgresrepository, err := shipmentrepository.NewPostgresShipmentRepository(cnfg.Repository.PostgresURL, zaplogger)
-	if err != nil {
-		log.Println("error on initializing the shipment repository")
-		os.Exit(1)
-		return
-	}
-
-	shipmentstatuspostgresrepository, err := shipmentstatusrepository.NewPostgresShipmentStatusRepository(cnfg.Repository.PostgresURL, zaplogger)
-	if err != nil {
-		log.Println("error on initializing the shipment repository")
-		os.Exit(1)
-		return
-	}
-
-	shipmentService, err := shipmentservice.NewShipmentService(
-		zaplogger,
-		shipmentpostgresrepository,
-		shipmentstatuspostgresrepository,
-		userpostgresrepository,
-	)
-	if err != nil {
-		log.Println("error on setup the shipment service")
-		os.Exit(1)
-		return
-	}
-
-	userService, err := userservice.NewUserService(zaplogger, userpostgresrepository)
-	if err != nil {
-		log.Println("error on setup the shipment service")
-		os.Exit(1)
-		return
-	}
-
-	shipmentHandlers := shipment_handlers.NewHTTPShipmentHandler(shipmentService)
-	userHandlers := user_handlers.NewHTTPUserHandler(userService)
-
-	handlers := http.NewServeMux()
-	authMiddleware := middlewares.AuthMiddleware()
-	paginationMiddleware := middlewares.PaginationMiddleware()
-
-	handlers.Handle("POST /shipments", authMiddleware(shipmentHandlers.Register))
-	handlers.HandleFunc("GET /shipments/{shipment_id}", authMiddleware(shipmentHandlers.ListShipmentDetails))
-	handlers.HandleFunc("GET /shipments", authMiddleware(paginationMiddleware(shipmentHandlers.ListShipmentWithStatuses)))
-
-	handlers.HandleFunc("POST /account", userHandlers.CreateUser)
-	handlers.HandleFunc("POST /auth", userHandlers.Auth)
-
-	handlers.HandleFunc("GET /health", healthStatus)
-
-	port := fmt.Sprintf(":%d", cnfg.RestAPI.Port)
-	api := &http.Server{
-		Addr:    port,
-		Handler: handlers,
-	}
+	api := SetupAPI(&cnfg, services)
 
 	go func() {
-		zaplogger.Info(fmt.Sprintf("API is running on %s", port))
+		services.Logger.Info(fmt.Sprintf("API is running on :%d", cnfg.RestAPI.Port))
 		if err := api.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Printf("Server error: %v", err)
 			os.Exit(1)
 		}
 	}()
 
-	// Wait for interrupt signal
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
-	<-sigChan
+	go func() {
+		services.Logger.Info("Worker started")
+		worker.Start(ctx)
+	}()
 
-	log.Println("Shutdown signal received")
+	<-ctx.Done()
 
-	// Graceful shutdown with timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	if err := api.Shutdown(ctx); err != nil {
+	if err := api.Shutdown(shutdownCtx); err != nil {
 		log.Printf("Shutdown error: %v", err)
 		os.Exit(0)
 	}
 
-	log.Println("Server stopped")
 	os.Exit(0)
-}
 
-func healthStatus(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "OK")
+	/*
+		// Start the RestAPI
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			services.Logger.Info(fmt.Sprintf("API is running on %s", port))
+			if err := api.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Printf("Server error: %v", err)
+				os.Exit(1)
+			}
+		}()
+
+		<-ctx.Done()
+
+		// sigChan := make(chan os.Signal, 1)
+		// signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+		// <-sigChan
+		fmt.Println("Shutdown signal received")
+		log.Println("Shutdown signal received")
+		zaplogger.Info("Shutdown signal received")
+
+		// Graceful shutdown with timeout
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+
+		if err := api.Shutdown(shutdownCtx); err != nil {
+			log.Printf("Shutdown error: %v", err)
+			os.Exit(0)
+		}
+
+		wg.Wait()
+
+		log.Println("Server stopped")
+		os.Exit(0)
+	*/
 }

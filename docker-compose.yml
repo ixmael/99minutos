@@ -8,10 +8,28 @@ services:
   #     - "8080:8080"
   #   depends_on:
   #     - repository
+  #     - cache
+  #     - queue
+
+  cache:
+    image: valkey/valkey:8.1.5-alpine3.23
+    container_name: 99minutos_cache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  queue:
+    image: rabbitmq:4.2.4-management-alpine
+    container_name: 99minutos_queue
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
   repository:
-    image: docker.io/library/postgres:18.2-alpine3.23
+    image: postgres:18.2-alpine3.23
     container_name: 99minutos_repository
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

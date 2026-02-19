@@ -8,4 +8,8 @@ const (
 	PageKey      = "page"
 	LimitKey     = "limit"
 	DefaultLimit = 10
+
+	QueueShipmentKey = "shipments"
+
+	IdempotencyKey = "idempotency"
 )

@@ -17,4 +17,5 @@ type UserRepository interface {
 	Register(ctx context.Context, user *domain.User) error
 	FindByEmail(ctx context.Context, email string) (*domain.User, error)
 	FindByEmailAndHashedPassword(ctx context.Context, email, hashedPassword string) (*domain.User, error)
+	Stop()
 }

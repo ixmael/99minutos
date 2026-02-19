@@ -31,3 +31,12 @@ func NewPostgresUserStatusRepository(uri string, logger ports.Logger) (ports.Use
 
 	return &repo, nil
 }
+
+func (repo *postgresuserrepository) Stop() {
+	if repo.db != nil {
+		err := repo.db.Close()
+		if err != nil {
+			repo.logger.Error("error closing database", err)
+		}
+	}
+}

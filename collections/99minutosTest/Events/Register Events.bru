@@ -1,11 +1,11 @@
 meta {
-  name: Register Event
+  name: Register Events
   type: http
-  seq: 2
+  seq: 4
 }
 
 post {
-  url: {{host}}/events
+  url: {{host}}/events/batch
   body: json
   auth: inherit
 }
@@ -15,16 +15,28 @@ headers {
 }
 
 body:json {
-  {
-    "tracking_number": "019c771e-040e-739c-af0e-0585f6df53a3",
-    "status": "cancelled",
-    "timestamp": "2025-02-12T15:04:05Z",
-    "source": "driver_app",
-    "location": {
-      "lat": 19.4326,
-      "lng": -99.1332
+  [
+    {
+      "tracking_number": "019c7727-56d9-771b-83a2-53fa5ec832f9",
+      "status": "cancelled",
+      "timestamp": "2025-02-12T15:04:05Z",
+      "source": "driver_app",
+      "location": {
+        "lat": 19.4326,
+        "lng": -99.1332
+      }
+    },
+    {
+      "tracking_number": "019c7727-878c-742d-a238-918865431b85",
+      "status": "cancelled",
+      "timestamp": "2025-02-12T15:04:05Z",
+      "source": "driver_app",
+      "location": {
+        "lat": 19.4326,
+        "lng": -99.1332
+      }
     }
-  }
+  ]
 }
 
 settings {

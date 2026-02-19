@@ -39,3 +39,7 @@ func (l *InMemoryLoggerService) Error(msg string, args ...any) {
 func (l *InMemoryLoggerService) Fatal(msg string, args ...any) {
 	l.logger = append(l.logger, &msg)
 }
+
+func (l *InMemoryLoggerService) Stop() {
+	l.logger = nil
+}
