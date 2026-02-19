@@ -75,6 +75,7 @@ type ShipmentWithCurrentStatus struct {
 
 // ShipmentEventRequest represents a request to update the status of a shipment.
 type ShipmentEventRequest struct {
+	IdempotencyKey string
 	TrackingNumber string
 	Status         string
 	Timestamp      time.Time

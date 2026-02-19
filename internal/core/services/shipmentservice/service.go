@@ -12,6 +12,7 @@ type shipmentservice struct {
 	shipmentstatusrepository ports.ShipmentStatusRepository
 	userrepository           ports.UserRepository
 	queueservice             ports.QueueService
+	cacheservice             ports.CacheService
 }
 
 // NewShipmentService creates a new instance of the shipment service.
@@ -21,6 +22,7 @@ func NewShipmentService(
 	shipmentstatusrepository ports.ShipmentStatusRepository,
 	userrepository ports.UserRepository,
 	queueservice ports.QueueService,
+	cacheservice ports.CacheService,
 ) (ports.ShipmentService, error) {
 	err := queueservice.RegisterQueue(domain.QueueShipmentKey)
 	if err != nil {
@@ -33,6 +35,7 @@ func NewShipmentService(
 		shipmentstatusrepository: shipmentstatusrepository,
 		userrepository:           userrepository,
 		queueservice:             queueservice,
+		cacheservice:             cacheservice,
 	}
 
 	return &service, nil

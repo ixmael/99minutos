@@ -18,6 +18,7 @@ func SetupAPI(config *ApplicationConfig, services *ApplicationServices) *http.Se
 	handlers := http.NewServeMux()
 	authMiddleware := middlewares.AuthMiddleware()
 	paginationMiddleware := middlewares.PaginationMiddleware()
+	idempontencyMiddleware := middlewares.IdempontencyMiddleware()
 
 	handlers.Handle("POST /shipments", authMiddleware(shipmentHandlers.Register))
 	handlers.HandleFunc("GET /shipments/{shipment_id}", authMiddleware(shipmentHandlers.ListShipmentDetails))
@@ -26,8 +27,8 @@ func SetupAPI(config *ApplicationConfig, services *ApplicationServices) *http.Se
 	handlers.HandleFunc("POST /account", userHandlers.CreateUser)
 	handlers.HandleFunc("POST /auth", userHandlers.Auth)
 
-	handlers.HandleFunc("POST /events", eventsHandlers.RegisterEvent)
-	handlers.HandleFunc("POST /events/batch", eventsHandlers.RegisterBatchEvents)
+	handlers.HandleFunc("POST /events", idempontencyMiddleware(eventsHandlers.RegisterEvent))
+	handlers.HandleFunc("POST /events/batch", idempontencyMiddleware(eventsHandlers.RegisterBatchEvents))
 
 	handlers.HandleFunc("GET /health", healthStatus)
 

@@ -9,6 +9,7 @@ import (
 	"github.com/ixmael/99minutos/internal/infrastructure/postgres/shipmentstatusrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/postgres/userrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/rabbitmq"
+	"github.com/ixmael/99minutos/internal/infrastructure/valkey"
 	"github.com/ixmael/99minutos/internal/infrastructure/zaplogger"
 )
 
@@ -21,6 +22,7 @@ type ApplicationServices struct {
 	shipmentRepository       ports.ShipmentRepository
 	shipmentStatusRepository ports.ShipmentStatusRepository
 	queueService             ports.QueueService
+	cacheService             ports.CacheService
 }
 
 // SetupServices initializes and returns the application services.
@@ -55,12 +57,18 @@ func SetupServices(config *ApplicationConfig) (*ApplicationServices, error) {
 		return nil, err
 	}
 
+	valkeyService, err := valkey.NewValkeyService(config.Cache.ValkeyURL, zaplogger)
+	if err != nil {
+		return nil, err
+	}
+
 	shipmentService, err := shipmentservice.NewShipmentService(
 		zaplogger,
 		shipmentpostgresrepository,
 		shipmentstatuspostgresrepository,
 		userpostgresrepository,
 		queueService,
+		valkeyService,
 	)
 	if err != nil {
 		return nil, err
@@ -79,6 +87,7 @@ func SetupServices(config *ApplicationConfig) (*ApplicationServices, error) {
 		shipmentRepository:       shipmentpostgresrepository,
 		shipmentStatusRepository: shipmentstatuspostgresrepository,
 		queueService:             queueService,
+		cacheService:             valkeyService,
 	}
 
 	return &services, nil

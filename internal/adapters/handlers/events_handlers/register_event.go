@@ -16,6 +16,13 @@ func (h *HTTTEventHandler) RegisterEvent(w http.ResponseWriter, r *http.Request)
 
 	ctx := r.Context()
 
+	idempotencyKeyVal := ctx.Value(domain.IdempotencyKey)
+	idempontencyKey, ok := idempotencyKeyVal.(string)
+	if !ok {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
+
 	var webEventRequest struct {
 		TrackingNumber string    `json:"tracking_number"`
 		Status         string    `json:"status"`
@@ -33,6 +40,7 @@ func (h *HTTTEventHandler) RegisterEvent(w http.ResponseWriter, r *http.Request)
 	}
 
 	shipmentEventRequest := domain.ShipmentEventRequest{
+		IdempotencyKey: idempontencyKey,
 		TrackingNumber: webEventRequest.TrackingNumber,
 		Status:         webEventRequest.Status,
 		Timestamp:      webEventRequest.Timestamp,

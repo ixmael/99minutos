@@ -10,10 +10,14 @@ post {
   auth: inherit
 }
 
+headers {
+  Idempotency-Key: myidempontencykey2
+}
+
 body:json {
   {
-    "tracking_number": "019c76a3-c6f1-722a-beeb-1942bd15c934",
-    "status": "picked_up",
+    "tracking_number": "019c771e-040e-739c-af0e-0585f6df53a3",
+    "status": "cancelled",
     "timestamp": "2025-02-12T15:04:05Z",
     "source": "driver_app",
     "location": {

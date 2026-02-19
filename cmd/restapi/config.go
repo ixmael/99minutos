@@ -12,4 +12,7 @@ type ApplicationConfig struct {
 	Queue struct {
 		RabbitMQURL string `toml:"rabbitmq"`
 	} `toml:"queue"`
+	Cache struct {
+		ValkeyURL string `toml:"valkey"`
+	} `toml:"cache"`
 }

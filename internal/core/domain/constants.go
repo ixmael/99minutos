@@ -10,4 +10,6 @@ const (
 	DefaultLimit = 10
 
 	QueueShipmentKey = "shipments"
+
+	IdempotencyKey = "idempotency"
 )

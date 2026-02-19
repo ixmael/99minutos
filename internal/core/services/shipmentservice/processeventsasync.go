@@ -21,18 +21,48 @@ func (service *shipmentservice) ProcessEventsAsync(ctx context.Context) error {
 		shipment, err := service.shipmentrepository.FindByShipmentID(ctx, shipmentEventRequest.TrackingNumber)
 		if err != nil {
 			service.logger.Error("error on finding shipment by id", "error", err)
+
+			invalidRequestStatus := domain.EventStatusResult{
+				Status: "invalid",
+			}
+
+			cacheErr := service.cacheservice.Set(ctx, shipmentEventRequest.IdempotencyKey, &invalidRequestStatus)
+			if cacheErr != nil {
+				service.logger.Error("error on storing invalid event in cache", "error", cacheErr)
+			}
+
 			return err
 		}
 
 		currentShipmentStatus, err := service.shipmentstatusrepository.FindCurrentStatusByID(ctx, shipment.ID)
 		if err != nil {
 			service.logger.Error("error on finding shipment status by id", "error", err)
+
+			invalidRequestStatus := domain.EventStatusResult{
+				Status: "invalid",
+			}
+
+			cacheErr := service.cacheservice.Set(ctx, shipmentEventRequest.IdempotencyKey, &invalidRequestStatus)
+			if cacheErr != nil {
+				service.logger.Error("error on storing invalid event in cache", "error", cacheErr)
+			}
+
 			return err
 		}
 
 		nextStatus := domain.ShipmentStatusList(strings.ToUpper(shipmentEventRequest.Status))
 		if !domain.IsValidTransition(currentShipmentStatus.Status, nextStatus) {
 			service.logger.Error("the new status is not valid")
+
+			invalidRequestStatus := domain.EventStatusResult{
+				Status: "invalid",
+			}
+
+			cacheErr := service.cacheservice.Set(ctx, shipmentEventRequest.IdempotencyKey, &invalidRequestStatus)
+			if cacheErr != nil {
+				service.logger.Error("error on storing invalid event in cache", "error", cacheErr)
+			}
+
 			return nil
 		}
 
@@ -46,7 +76,26 @@ func (service *shipmentservice) ProcessEventsAsync(ctx context.Context) error {
 		err = service.shipmentstatusrepository.Save(ctx, &newShipmentStatus)
 		if err != nil {
 			service.logger.Error("error on creating the new shipment status", "error", err)
+
+			invalidRequestStatus := domain.EventStatusResult{
+				Status: "invalid",
+			}
+
+			cacheErr := service.cacheservice.Set(ctx, shipmentEventRequest.IdempotencyKey, &invalidRequestStatus)
+			if cacheErr != nil {
+				service.logger.Error("error on storing invalid event in cache", "error", cacheErr)
+			}
+
 			return err
+		}
+
+		successRequestStatus := domain.EventStatusResult{
+			Status: "success",
+		}
+
+		cacheErr := service.cacheservice.Set(ctx, shipmentEventRequest.IdempotencyKey, &successRequestStatus)
+		if cacheErr != nil {
+			service.logger.Error("error on storing success event in cache", "error", cacheErr)
 		}
 
 		return nil
