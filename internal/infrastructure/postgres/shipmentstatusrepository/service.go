@@ -9,11 +9,12 @@ import (
 )
 
 type postgresshipmentstatusrepository struct {
-	db *sql.DB
+	db     *sql.DB
+	logger ports.Logger
 }
 
 // NewPostgresShipmentStatusRepository implements ports.ShipmentStatusRepository
-func NewPostgresShipmentStatusRepository(uri string) (ports.ShipmentStatusRepository, error) {
+func NewPostgresShipmentStatusRepository(uri string, logger ports.Logger) (ports.ShipmentStatusRepository, error) {
 	db, err := sql.Open("postgres", uri)
 	if err != nil {
 		return nil, err
@@ -24,7 +25,8 @@ func NewPostgresShipmentStatusRepository(uri string) (ports.ShipmentStatusReposi
 	}
 
 	repo := postgresshipmentstatusrepository{
-		db: db,
+		db:     db,
+		logger: logger,
 	}
 
 	return &repo, nil

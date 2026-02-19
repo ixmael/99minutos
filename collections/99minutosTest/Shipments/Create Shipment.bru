@@ -1,0 +1,61 @@
+meta {
+  name: Create Shipment
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/shipments
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "origin": "New York",
+    "destination": "Los Angeles"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: success example
+  
+  request: {
+    url: {{host}}/shipments
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "origin": "New York",
+        "destination": "Los Angeles"
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      date: Wed, 18 Feb 2026 21:37:13 GMT
+      content-length: 55
+      content-type: text/plain; charset=utf-8
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "shipment_id": "019c72af-8c26-78fa-80d8-d3a0b3a97456"
+        }
+      '''
+    }
+  }
+}

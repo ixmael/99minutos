@@ -16,7 +16,13 @@ func (service *shipmentservice) CreateShipment(
 		return nil, errors.New("invalid request")
 	}
 
-	newShipment, err := domain.NewShipment(ctx, newShipmentRequest.Origin, newShipmentRequest.Destination)
+	user, err := service.userrepository.FindByEmail(ctx, newShipmentRequest.Email)
+	if err != nil {
+		service.logger.Error("cannot find user", "error", err)
+		return nil, err
+	}
+
+	newShipment, err := domain.NewShipment(ctx, user.ID, newShipmentRequest.Origin, newShipmentRequest.Destination)
 	if err != nil {
 		service.logger.Error("invalid shipment", "error", err)
 		return nil, err

@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"strings"
 	"time"
 )
 
@@ -12,6 +13,7 @@ const (
 	ShipmentInWarehouseStatus ShipmentStatusList = "IN_WAREHOUSE"
 	ShipmentInTransitStatus   ShipmentStatusList = "IN_TRANSIT"
 	ShipmentDeliveredStatus   ShipmentStatusList = "DELIVERED"
+	ShipmentCancelledStatus   ShipmentStatusList = "CANCELLED"
 )
 
 // ShipmentStatus represents a shipment status.
@@ -27,6 +29,18 @@ func NewCreatedShipmentStatus(shipmentID string) (*ShipmentStatus, error) {
 	shipmentstatus := &ShipmentStatus{
 		ID:        shipmentID,
 		Status:    ShipmentCreatedStatus,
+		CreatedAt: &now,
+	}
+
+	return shipmentstatus, nil
+}
+
+func NewShipmentStatus(shipmentID, statusStr string) (*ShipmentStatus, error) {
+	status := ShipmentStatusList(strings.ToUpper(statusStr))
+	now := time.Now()
+	shipmentstatus := &ShipmentStatus{
+		ID:        shipmentID,
+		Status:    status,
 		CreatedAt: &now,
 	}
 

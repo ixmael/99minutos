@@ -1,0 +1,61 @@
+meta {
+  name: Auth user
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/auth
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "hola2@ixmael.dev",
+    "password": "12345678"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: success
+  
+  request: {
+    url: {{host}}/auth
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "email": "hola@ixmael.dev",
+        "password": "12345678"
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      date: Wed, 18 Feb 2026 19:55:44 GMT
+      content-length: 192
+      content-type: text/plain; charset=utf-8
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbWFpbCI6IiIsImV4cCI6MTc3MTQ0NjM0NCwicm9sZSI6ImNsaWVudCIsInN1YiI6IjAifQ.NdpDWKSOomYVuPRFvC2oeOD-7UhL7jA8LS5V0dPHBSI"
+        }
+      '''
+    }
+  }
+}
