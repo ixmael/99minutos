@@ -13,6 +13,7 @@ type ShipmentService interface {
 	GetAllWithStatuses(ctx context.Context, email string, pagination *domain.PaginationRequest) ([]*domain.ShipmentWithCurrentStatus, error)
 	RegisterEventAsync(ctx context.Context, shipmentEventRequest *domain.ShipmentEventRequest) (*domain.EventStatusResult, error)
 	ProcessEventsAsync(ctx context.Context) error
+	RegisterEventsBatchAsync(ctx context.Context, idempotencyKey string, shipmentEventRequests []*domain.ShipmentEventRequest) (*domain.EventStatusResult, error)
 }
 
 type ShipmentRepository interface {

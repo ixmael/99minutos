@@ -13,7 +13,7 @@ import (
 func SetupAPI(config *ApplicationConfig, services *ApplicationServices) *http.Server {
 	shipmentHandlers := shipment_handlers.NewHTTPShipmentHandler(services.ShipmentService)
 	userHandlers := user_handlers.NewHTTPUserHandler(services.UserService)
-	eventsHandlers := events_handlers.NewHTTTEventHandler(services.ShipmentService)
+	eventsHandlers := events_handlers.NewHTTTEventHandler(services.ShipmentService, services.Logger)
 
 	handlers := http.NewServeMux()
 	authMiddleware := middlewares.AuthMiddleware()

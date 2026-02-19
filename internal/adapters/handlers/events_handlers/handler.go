@@ -8,11 +8,13 @@ import (
 
 type HTTTEventHandler struct {
 	service ports.ShipmentService
+	logger  ports.Logger
 }
 
-func NewHTTTEventHandler(shipmentservice ports.ShipmentService) *HTTTEventHandler {
+func NewHTTTEventHandler(shipmentservice ports.ShipmentService, logger ports.Logger) *HTTTEventHandler {
 	return &HTTTEventHandler{
 		service: shipmentservice,
+		logger:  logger,
 	}
 }
 

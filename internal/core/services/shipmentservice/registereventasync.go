@@ -30,7 +30,8 @@ func (service *shipmentservice) RegisterEventAsync(ctx context.Context, shipment
 		}
 
 		pendingStatus := domain.EventStatusResult{
-			Status: "pending",
+			TrackingNumber: shipmentEventRequest.TrackingNumber,
+			Status:         "pending",
 		}
 
 		err = service.cacheservice.Set(ctx, shipmentEventRequest.IdempotencyKey, &pendingStatus)

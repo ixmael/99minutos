@@ -87,5 +87,6 @@ type ShipmentEventRequest struct {
 }
 
 type EventStatusResult struct {
-	Status string
+	TrackingNumber string `json:"tracking_number,omitempty"`
+	Status         string `json:"status"`
 }
