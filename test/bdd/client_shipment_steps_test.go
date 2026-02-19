@@ -14,7 +14,9 @@ import (
 
 	"github.com/ixmael/99minutos/internal/core/domain"
 	"github.com/ixmael/99minutos/internal/core/services/shipmentservice"
+	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/cache"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/logger"
+	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/queue"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/shipmentrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/shipmentstatusrepository"
 	"github.com/ixmael/99minutos/internal/infrastructure/inmemory/userrepository"
@@ -84,7 +86,24 @@ func (cs *ClientShipmentSteps) GivenShipmentSystemIsReady() error {
 		return err
 	}
 
-	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository, shipmentstatusrepository, userrepository)
+	inmemoryqueue, err := queue.NewInMemoryQueue()
+	if err != nil {
+		return err
+	}
+
+	inmemorycache, err := cache.NewInMemoryCache()
+	if err != nil {
+		return err
+	}
+
+	shipmentservice, err := shipmentservice.NewShipmentService(
+		logger,
+		shipmentrepository,
+		shipmentstatusrepository,
+		userrepository,
+		inmemoryqueue,
+		inmemorycache,
+	)
 	if err != nil {
 		return err
 	}
@@ -368,7 +387,17 @@ func (cs *ClientShipmentSteps) GivenSystemIsReadyToList() error {
 		return err
 	}
 
-	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository, shipmentstatusrepository, userrepository)
+	queueservice, err := queue.NewInMemoryQueue()
+	if err != nil {
+		return err
+	}
+
+	cacheservice, err := cache.NewInMemoryCache()
+	if err != nil {
+		return err
+	}
+
+	shipmentservice, err := shipmentservice.NewShipmentService(logger, shipmentrepository, shipmentstatusrepository, userrepository, queueservice, cacheservice)
 	if err != nil {
 		return err
 	}

@@ -2,6 +2,7 @@ package shipmentstatusrepository
 
 import (
 	"context"
+	"errors"
 	"sync"
 
 	"github.com/ixmael/99minutos/internal/core/domain"
@@ -54,4 +55,11 @@ func (repo *InMemoryShipmentStatusRepository) GetAll() []*domain.ShipmentStatus 
 	}
 
 	return status
+}
+
+func (repo *InMemoryShipmentStatusRepository) FindCurrentStatusByID(ctx context.Context, shipmentID string) (*domain.ShipmentStatus, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (repo *InMemoryShipmentStatusRepository) Stop() {
 }

@@ -64,3 +64,6 @@ func (repo *InMemoryUserRepository) FindByEmail(ctx context.Context, email strin
 func (repo *InMemoryUserRepository) FindByEmailAndHashedPassword(ctx context.Context, email, hashedPassword string) (*domain.User, error) {
 	return nil, errors.New("not implemented")
 }
+
+func (repo *InMemoryUserRepository) Stop() {
+}
