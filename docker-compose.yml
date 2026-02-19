@@ -1,30 +1,54 @@
 services:
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: tracking_app
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - repository
-  #     - cache
-  #     - queue
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@repository:5432/99minutos?sslmode=disable
+    ports:
+      - "8080:8080"
+    networks:
+      - services-net
+      - public-net
+    depends_on:
+      repository:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      queue:
+        condition: service_healthy
 
   cache:
     image: valkey/valkey:8.1.5-alpine3.23
     container_name: 99minutos_cache
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "valkey-cli ping | grep PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     ports:
       - "6379:6379"
+    networks:
+      - services-net
 
   queue:
     image: rabbitmq:4.2.4-management-alpine
     container_name: 99minutos_queue
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - services-net
 
   repository:
     image: postgres:18.2-alpine3.23
@@ -36,5 +60,24 @@ services:
       POSTGRES_DB: 99minutos
     volumes:
       - ./repostory-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     ports:
       - "5432:5432"
+    networks:
+      - services-net
+
+networks:
+  public-net:
+    driver: bridge
+  services-net:
+    driver: bridge
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.1.0/24

@@ -7,7 +7,8 @@ type ApplicationConfig struct {
 		Port int `toml:"port"`
 	} `toml:"restapi"`
 	Repository struct {
-		PostgresURL string `toml:"postgres"`
+		PostgresURL            string `toml:"postgres"`
+		PostgresMigrationsPath string `toml:"migrations_path"`
 	} `toml:"repository"`
 	Queue struct {
 		RabbitMQURL string `toml:"rabbitmq"`
