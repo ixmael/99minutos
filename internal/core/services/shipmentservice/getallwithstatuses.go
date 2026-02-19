@@ -7,7 +7,7 @@ import (
 	"github.com/ixmael/99minutos/internal/core/domain"
 )
 
-func (service *shipmentservice) GetAllWithStatuses(ctx context.Context, email string) ([]*domain.ShipmentWithCurrentStatus, error) {
+func (service *shipmentservice) GetAllWithStatuses(ctx context.Context, email string, pagination *domain.PaginationRequest) ([]*domain.ShipmentWithCurrentStatus, error) {
 	user, err := service.userrepository.FindByEmail(ctx, email)
 	if err != nil {
 		service.logger.Error("failed to load user", "error", err)
@@ -20,13 +20,13 @@ func (service *shipmentservice) GetAllWithStatuses(ctx context.Context, email st
 
 	var shipmentsWithStatus []*domain.ShipmentWithCurrentStatus = nil
 	if user.IsAdmin {
-		shipmentsWithStatus, err = service.shipmentrepository.GetAllWithStatuses(ctx)
+		shipmentsWithStatus, err = service.shipmentrepository.GetAllWithStatuses(ctx, pagination)
 		if err != nil {
 			service.logger.Error("failed to load all the shipments with the current statuses", "error", err)
 			return nil, err
 		}
 	} else {
-		shipmentsWithStatus, err = service.shipmentrepository.GetAllMyShipmentsWithStatuses(ctx, user.ID)
+		shipmentsWithStatus, err = service.shipmentrepository.GetAllMyShipmentsWithStatuses(ctx, user.ID, pagination)
 		if err != nil {
 			service.logger.Error("failed to load all the shipments with the current statuses", "error", err)
 			return nil, err

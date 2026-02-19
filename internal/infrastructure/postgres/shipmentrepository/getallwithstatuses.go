@@ -8,10 +8,11 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	sq "github.com/Masterminds/squirrel"
+
 	"github.com/ixmael/99minutos/internal/core/domain"
 )
 
-func (repo *postgresshipmentrepository) GetAllWithStatuses(ctx context.Context) ([]*domain.ShipmentWithCurrentStatus, error) {
+func (repo *postgresshipmentrepository) GetAllWithStatuses(ctx context.Context, pagination *domain.PaginationRequest) ([]*domain.ShipmentWithCurrentStatus, error) {
 	statusSubquery := sq.Select("DISTINCT ON (shipment_id) shipment_id, status, created_at").
 		From("shipment_status").
 		OrderBy("shipment_id", "created_at ASC")
@@ -20,6 +21,7 @@ func (repo *postgresshipmentrepository) GetAllWithStatuses(ctx context.Context) 
 		return nil, err
 	}
 
+	offset := uint64((pagination.Page - 1) * pagination.Limit)
 	getShipmentWithStatusesQuery := sq.Select(
 		"S.tracking_number_id AS id",
 		"S.origin AS origin",
@@ -29,6 +31,8 @@ func (repo *postgresshipmentrepository) GetAllWithStatuses(ctx context.Context) 
 		"ST.created_at AS updated_at",
 	).From("shipment S").
 		Join(fmt.Sprintf("(%s) st ON S.tracking_number_id = ST.shipment_id", subQuerySql), subArgs...).
+		Limit(uint64(pagination.Limit)).
+		Offset(offset).
 		PlaceholderFormat(squirrel.Dollar)
 
 	rows, err := getShipmentWithStatusesQuery.RunWith(repo.db).PlaceholderFormat(sq.Dollar).QueryContext(ctx)

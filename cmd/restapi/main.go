@@ -107,10 +107,11 @@ func main() {
 
 	handlers := http.NewServeMux()
 	authMiddleware := middlewares.AuthMiddleware()
+	paginationMiddleware := middlewares.PaginationMiddleware()
 
 	handlers.Handle("POST /shipments", authMiddleware(shipmentHandlers.Register))
 	handlers.HandleFunc("GET /shipments/{shipment_id}", authMiddleware(shipmentHandlers.ListShipmentDetails))
-	handlers.HandleFunc("GET /shipments", authMiddleware(shipmentHandlers.ListShipmentWithStatuses))
+	handlers.HandleFunc("GET /shipments", authMiddleware(paginationMiddleware(shipmentHandlers.ListShipmentWithStatuses)))
 
 	handlers.HandleFunc("POST /account", userHandlers.CreateUser)
 	handlers.HandleFunc("POST /auth", userHandlers.Auth)

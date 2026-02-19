@@ -5,9 +5,14 @@ meta {
 }
 
 get {
-  url: {{host}}/shipments
+  url: {{host}}/shipments?page=1&limit=3
   body: json
   auth: inherit
+}
+
+params:query {
+  page: 1
+  limit: 3
 }
 
 body:json {
