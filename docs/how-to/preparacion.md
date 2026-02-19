@@ -1,6 +1,6 @@
-# Preparación
+# ¿Cómo configurar el entorno?
 
-Para preparar la aplicación y ejecutarla, necesita definir un archivo con formato TOML. La aplicación por defecto busca el archivo `.env.toml`, pero si desea usar otro archivo, puede especificarlo en la línea de comandos usando la opción `--config` o `-c`.
+Para preparar la aplicación y ejecutarla, necesita definir un archivo con formato `TOML`. La aplicación por defecto busca el archivo `.env.toml`, pero si desea usar otro archivo, puede especificarlo en la línea de comandos usando la opción `--config` o `-c`.
 
 El archivo de configuración tiene la siguiente estructura:
 
