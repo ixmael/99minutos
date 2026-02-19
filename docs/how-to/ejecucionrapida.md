@@ -18,3 +18,7 @@ docker-compose up -d
 ```bash
 curl -I http://localhost:8080/health
 ```
+
+6. Ahora ya puede seguir el [Tutorial para registrar usuarios](docs/tutorials/registrousuario.md).
+7. Después de registrar un usuario, puede iniciar sesión en la aplicación para obtener el token de acceso.
+8. Ya que obtuvo el token de acceso, puede utilizarlo para realizar solicitudes a la API.

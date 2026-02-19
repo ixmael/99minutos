@@ -1,0 +1,768 @@
+{
+  "info": {
+    "name": "99minutos Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "{{host}}/health",
+          "protocol": "",
+          "host": [
+            "{{host}}"
+          ],
+          "path": [
+            "health"
+          ],
+          "query": [],
+          "variable": []
+        }
+      },
+      "response": [
+        {
+          "name": "health success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}/health",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "health"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "date",
+              "value": "Wed, 18 Feb 2026 17:44:51 GMT",
+              "name": "date",
+              "description": "",
+              "type": "text"
+            },
+            {
+              "key": "content-length",
+              "value": "2",
+              "name": "content-length",
+              "description": "",
+              "type": "text"
+            },
+            {
+              "key": "content-type",
+              "value": "text/plain; charset=utf-8",
+              "name": "content-type",
+              "description": "",
+              "type": "text"
+            }
+          ],
+          "cookie": [],
+          "body": "OK",
+          "_postman_previewlanguage": "text"
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Register Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "myidempontencykey2",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/events",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "events"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tracking_number\": \"019c771e-040e-739c-af0e-0585f6df53a3\",\n  \"status\": \"cancelled\",\n  \"timestamp\": \"2025-02-12T15:04:05Z\",\n  \"source\": \"driver_app\",\n  \"location\": {\n    \"lat\": 19.4326,\n    \"lng\": -99.1332\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "success example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/shipments",
+                  "protocol": "",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "shipments"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": \"New York\",\n  \"destination\": \"Los Angeles\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 18 Feb 2026 21:37:13 GMT",
+                  "name": "date",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55",
+                  "name": "content-length",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-type",
+                  "value": "text/plain; charset=utf-8",
+                  "name": "content-type",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"shipment_id\": \"019c72af-8c26-78fa-80d8-d3a0b3a97456\"\n}",
+              "_postman_previewlanguage": "text"
+            }
+          ]
+        },
+        {
+          "name": "Register Events",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Idempotency-Key",
+                "value": "myidempontencykey2",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/events/batch",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "events",
+                "batch"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"tracking_number\": \"019c7727-56d9-771b-83a2-53fa5ec832f9\",\n    \"status\": \"cancelled\",\n    \"timestamp\": \"2025-02-12T15:04:05Z\",\n    \"source\": \"driver_app\",\n    \"location\": {\n      \"lat\": 19.4326,\n      \"lng\": -99.1332\n    }\n  },\n  {\n    \"tracking_number\": \"019c7727-878c-742d-a238-918865431b85\",\n    \"status\": \"cancelled\",\n    \"timestamp\": \"2025-02-12T15:04:05Z\",\n    \"source\": \"driver_app\",\n    \"location\": {\n      \"lat\": 19.4326,\n      \"lng\": -99.1332\n    }\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "success example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/shipments",
+                  "protocol": "",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "shipments"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": \"New York\",\n  \"destination\": \"Los Angeles\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 18 Feb 2026 21:37:13 GMT",
+                  "name": "date",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55",
+                  "name": "content-length",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-type",
+                  "value": "text/plain; charset=utf-8",
+                  "name": "content-type",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"shipment_id\": \"019c72af-8c26-78fa-80d8-d3a0b3a97456\"\n}",
+              "_postman_previewlanguage": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shipments",
+      "item": [
+        {
+          "name": "Create Shipment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/shipments",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "shipments"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin\": \"New York\",\n  \"destination\": \"Los Angeles\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "success example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/shipments",
+                  "protocol": "",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "shipments"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": \"New York\",\n  \"destination\": \"Los Angeles\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 18 Feb 2026 21:37:13 GMT",
+                  "name": "date",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-length",
+                  "value": "55",
+                  "name": "content-length",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-type",
+                  "value": "text/plain; charset=utf-8",
+                  "name": "content-type",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"shipment_id\": \"019c72af-8c26-78fa-80d8-d3a0b3a97456\"\n}",
+              "_postman_previewlanguage": "text"
+            }
+          ]
+        },
+        {
+          "name": "List all shipments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/shipments?page=1&limit=3",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "shipments?page=1&limit=3"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin\": \"New York\",\n  \"destination\": \"Los Angeles\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "success example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/shipments",
+                  "protocol": "",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "shipments"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": \"New York\",\n  \"destination\": \"Los Angeles\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 18 Feb 2026 22:53:20 GMT",
+                  "name": "date",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-length",
+                  "value": "1283",
+                  "name": "content-length",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-type",
+                  "value": "text/plain; charset=utf-8",
+                  "name": "content-type",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"ID\": \"019c7273-448b-799a-bb80-9d61e28a1718\",\n    \"Origin\": \"New York\",\n    \"Destination\": \"Los Angeles\",\n    \"Status\": \"CREATED\",\n    \"CreatedAt\": \"2026-02-18T20:31:22Z\",\n    \"UpdatedAt\": \"2026-02-18T20:31:22Z\"\n  },\n  {\n    \"ID\": \"019c7278-9f16-7bac-8870-53a9a71afe4a\",\n    \"Origin\": \"New York\",\n    \"Destination\": \"Los Angeles\",\n    \"Status\": \"CREATED\",\n    \"CreatedAt\": \"2026-02-18T20:37:13Z\",\n    \"UpdatedAt\": \"2026-02-18T20:37:42Z\"\n  },\n  {\n    \"ID\": \"019c727a-0ccb-7b68-b415-b317fe2f39e1\",\n    \"Origin\": \"New York\",\n    \"Destination\": \"Los Angeles\",\n    \"Status\": \"CREATED\",\n    \"CreatedAt\": \"2026-02-18T20:38:47Z\",\n    \"UpdatedAt\": \"2026-02-18T20:38:47Z\"\n  },\n  {\n    \"ID\": \"019c727d-a90d-7239-a5b7-2c80b1b8d660\",\n    \"Origin\": \"New York\",\n    \"Destination\": \"Los Angeles\",\n    \"Status\": \"CREATED\",\n    \"CreatedAt\": \"2026-02-18T20:42:43Z\",\n    \"UpdatedAt\": \"2026-02-18T20:42:43Z\"\n  },\n  {\n    \"ID\": \"019c727d-dcc3-797e-be09-0ecf37049a40\",\n    \"Origin\": \"New York\",\n    \"Destination\": \"Los Angeles\",\n    \"Status\": \"CREATED\",\n    \"CreatedAt\": \"2026-02-18T20:42:57Z\",\n    \"UpdatedAt\": \"2026-02-18T20:42:57Z\"\n  },\n  {\n    \"ID\": \"019c727d-eeff-765f-90e3-807d282762a3\",\n    \"Origin\": \"New York\",\n    \"Destination\": \"Los Angeles\",\n    \"Status\": \"CREATED\",\n    \"CreatedAt\": \"2026-02-18T20:43:01Z\",\n    \"UpdatedAt\": \"2026-02-18T20:43:01Z\"\n  },\n  {\n    \"ID\": \"019c72af-8c26-78fa-80d8-d3a0b3a97456\",\n    \"Origin\": \"New York\",\n    \"Destination\": \"Los Angeles\",\n    \"Status\": \"CREATED\",\n    \"CreatedAt\": \"2026-02-18T21:37:13Z\",\n    \"UpdatedAt\": \"2026-02-18T21:37:13Z\"\n  }\n]",
+              "_postman_previewlanguage": "text"
+            }
+          ]
+        },
+        {
+          "name": "List shipment details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/shipments/:shipment_id",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "shipments",
+                ":shipment_id"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "key": "shipment_id",
+                  "value": "019c72af-8c26-78fa-80d8-d3a0b3a97456"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin\": \"New York\",\n  \"destination\": \"Los Angeles\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "succeess example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/shipments/:shipment_id",
+                  "protocol": "",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "shipments",
+                    ":shipment_id"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "key": "shipment_id",
+                      "value": "019c72af-8c26-78fa-80d8-d3a0b3a97456"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": \"New York\",\n  \"destination\": \"Los Angeles\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Thu, 19 Feb 2026 01:15:45 GMT",
+                  "name": "date",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-length",
+                  "value": "288",
+                  "name": "content-length",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-type",
+                  "value": "text/plain; charset=utf-8",
+                  "name": "content-type",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"ID\": \"019c72af-8c26-78fa-80d8-d3a0b3a97456\",\n  \"UserID\": 0,\n  \"Origin\": \"New York\",\n  \"Destination\": \"Los Angeles\",\n  \"CreatedAt\": \"2026-02-18T21:37:13Z\",\n  \"UpdatedAt\": \"0001-01-01T00:00:00Z\",\n  \"Statuses\": [\n    {\n      \"ID\": \"019c72af-8c26-78fa-80d8-d3a0b3a97456\",\n      \"Status\": \"CREATED\",\n      \"CreatedAt\": \"2026-02-18T21:37:13Z\"\n    }\n  ]\n}",
+              "_postman_previewlanguage": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Auth user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/auth",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "auth"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hola1@ixmael.dev\",\n  \"password\": \"12345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/auth",
+                  "protocol": "",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "auth"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"hola@ixmael.dev\",\n  \"password\": \"12345678\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 18 Feb 2026 19:55:44 GMT",
+                  "name": "date",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-length",
+                  "value": "192",
+                  "name": "content-length",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-type",
+                  "value": "text/plain; charset=utf-8",
+                  "name": "content-type",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJlbWFpbCI6IiIsImV4cCI6MTc3MTQ0NjM0NCwicm9sZSI6ImNsaWVudCIsInN1YiI6IjAifQ.NdpDWKSOomYVuPRFvC2oeOD-7UhL7jA8LS5V0dPHBSI\"\n}",
+              "_postman_previewlanguage": "text"
+            }
+          ]
+        },
+        {
+          "name": "Create a new user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/account",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "account"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hola2@ixmael.dev\",\n  \"password\": \"12345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "success example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{host}}/account",
+                  "protocol": "",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "path": [
+                    "account"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"hola@ixmael.dev\",\n  \"password\": \"12345678\",\n  \"is_admin\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Wed, 18 Feb 2026 19:39:14 GMT",
+                  "name": "date",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-length",
+                  "value": "9",
+                  "name": "content-length",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "content-type",
+                  "value": "text/plain; charset=utf-8",
+                  "name": "content-type",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1\n}",
+              "_postman_previewlanguage": "text"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "host",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
