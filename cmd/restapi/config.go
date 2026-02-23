@@ -3,6 +3,7 @@ package main
 // ApplicationConfig represents the configuration for the application.
 type ApplicationConfig struct {
 	Environment string `toml:"environment"`
+	Version     string `toml:"version"`
 	RestAPI     struct {
 		Port int `toml:"port"`
 	} `toml:"restapi"`
